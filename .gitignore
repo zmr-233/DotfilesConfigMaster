@@ -1,7 +1,9 @@
-history/*
+backup/*
 
 install.sh
 update.sh
 uninstall.sh
 
 temp/*
+
+CURDOTFILES/*

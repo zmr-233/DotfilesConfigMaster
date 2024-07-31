@@ -3,16 +3,29 @@
 # 命令检查
 cmdCheck(){ type $1 > /dev/null 2>&1; }
 
+# 纯配置检查
+configCheck(){
+    if [[ -z $ISCONFIG ]];then
+        
+        if [[ -e "$1" ]];then
+            return 0
+        else
+            return 1
+        fi
+    else
+        return 0
+    fi
+}
 # 生成标注
 genSignS(){
     local name=$1
     if [ -n "$2" ]; then
 cat <<EOF >> $2
-# >>>[$name]>>> ConfigStart
+# >>>> [$name] >>>>Start
 EOF
     else
-        cat <<EOF
-# >>>[$name]>>> ConfigStart
+cat <<EOF
+# >>>[$name]>>>Start
 EOF
     fi
 }
@@ -20,12 +33,12 @@ genSignE(){
     local name=$1
     if [ -n "$2" ]; then
 cat <<EOF >> $2
-# <<<[$name]<<< ConfigEnd
+# <<<< [$name] <<<<End
 
 EOF
     else
 cat <<EOF
-# <<<[$name]<<< ConfigEnd
+# <<<< [$name] <<<<End
 
 EOF
     fi
@@ -373,7 +386,7 @@ safeTarBackup() {
     # 检查CURDOTFILES是否非空且存在
     if [ -n "$curDotFilesDir" ] && [ -d "$curDotFilesDir" ]; then
         # 设置备份目录
-        local backupDir="${BACKUPDIR:-./backups}"
+        local backupDir="${BACKUPP:-./backup}"
         mkdir -p "$backupDir"
         
         # 生成备份文件名
@@ -397,7 +410,7 @@ safeBackup() {
 
     if [ -f "$targetDir/$fileName" ]; then
         # 设置历史备份目录
-        local historyDir="${HISTORYP:-./history}"
+        local historyDir="${BACKUPP:-./backup}"
         if [ -n "$backupSubdir" ]; then
             historyDir="$historyDir/$backupSubdir"
         fi

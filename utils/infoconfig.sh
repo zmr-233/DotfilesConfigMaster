@@ -1,40 +1,5 @@
 #!/bin/bash
 
-# check_recordInstall(){
-#     # declare -n recordInstall=$1
-#     # declare -n ifInstall=$2
-#     declare -i ifER=0
-#     for reg in "${recordInstall[@]}"; do
-#         if [[ -z ${ifInstall[$reg]} || ${ifInstall[$reg]} == "0" ]]; then
-#             cerr "==> $reg : NOT INSTALLED"
-#             ifER=$((ifER+1))
-#         else
-#             cinfo "==> $reg : INSTALLED"
-#         fi
-#     done
-
-#     return $ifER
-# }
-
-# check_deps(){
-#     # declare -n ifInstall=$1
-#     local depL=$1
-#     local ifER=0
-
-#     for cmd in $depL; do
-#         if [[ -z ${ifInstall[$cmd]} || ${ifInstall[$cmd]} == "0" ]]; then
-#             if !cmdCheck $cmd; then
-#                 cerror "未找到命令: $cmd"
-#                 ifER=1
-#             fi
-#         fi
-#     done
-#     return $ifER
-# }
-
-
-
-
 # 带提示的安装配置函数
 __info__install_select(){
     local sinName=$1
@@ -121,19 +86,18 @@ __info__install_select(){
     # [ "$DEB" = "y" ] && saveMap recordInstallMap
 
     # 配置
-    cinfo "......自动生成配置 $sinName......"
-    # if [[ $status -eq 0 || $status -eq 3 ]]; then
-    #     cwarn "检测到已经安装，是否仍然进行配置?"
-    # fi
-    if inArray recordConfig $sinName; then
-        cinfo "==> 检测到已在配置列表recordConfig"
-    else
-        if [[ $SILENT_INSTALL == "n" ]]; then
-            if readReturn "是否自动生成配置?(写入配置列表recordConfig)"; then
+    if cmdCheck "${sinName}_config";then
+        cinfo "......自动生成配置 $sinName......"
+        if inArray recordConfig $sinName; then
+            cinfo "==> 检测到已在配置列表recordConfig"
+        else
+            if [[ $SILENT_INSTALL == "n" ]]; then
+                if readReturn "是否需要生成配置文件?"; then
+                    recordConfig+=("$sinName")
+                fi
+            else
                 recordConfig+=("$sinName")
             fi
-        else
-            recordConfig+=("$sinName")
         fi
     fi
 }
@@ -361,10 +325,11 @@ info_help() {
 # 打印安装信息
 info_install_list() {
     minfo "......显示安装信息......"
+    cnote "[y][*]代表已经安装且有配置文件"
     local count=0
     local max_per_line=4
 
-    finfo "========$(hostname)安装检测========"
+    cecho GREEN_BOLD "\n========$(hostname)安装检测========"
     for item in "${recordInstall[@]}"; do
         # 每输出4个项后换行
         if (( count % max_per_line == 0 )) && (( count > 0 )); then
@@ -380,11 +345,13 @@ info_install_list() {
             if [[ -n ${recordInstallMap[$item]} ]]; then
                 # 检查是否配置
                 if [[ -n ${recordConfigMap[$item]} ]]; then
-                    cline "GREEN_BOLD" "$item : [y]   "
+                    cline YELLOW "$item "
+                    cline GREEN_BOLD "[y*]"
+                    cline DIM "......."
                 else
-                    echo ""
-                    cwarn "==> $item : [y]-配置信息缺失"
-                    count=-1
+                    cline YELLOW "$item "
+                    cline GREEN_BOLD "[y]"
+                    cline DIM "......."
                 fi
             else
                 echo ""
@@ -394,7 +361,9 @@ info_install_list() {
         else
             # 未安装
             if [[ -n ${recordInstallMap[$item]} ]]; then
-                cline "RED_BOLD" "$item : [n]   "
+                    cline YELLOW "$item "
+                    cline RED_BOLD "[n]"
+                    cline DIM "......."
             else
                 echo ""
                 cwarn "==> 你实际上安装了，但是没有配置在$(hostname).sh中: $item"
@@ -406,7 +375,7 @@ info_install_list() {
     done
     # 处理额外的项（如果有）
     echo ""
-    finfo "========其余未安装项========"
+    cecho GREEN_BOLD  "========其余未安装项========"
     count=0
 
     for item in "${regFiles[@]}"; do
@@ -425,7 +394,9 @@ info_install_list() {
                 cwarn "==> 你实际上安装了，但是没有配置在$(hostname).sh中: $item"
                 count=-1
             else
-                cline "RED" "$item : [n]   "
+                cline YELLOW "$item "
+                cline RED_BOLD "[n]"
+                cline DIM "......."
             fi
         fi
 

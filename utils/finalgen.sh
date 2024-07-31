@@ -51,11 +51,20 @@ if [[ $ifER -eq 0 ]]; then
     [ "$IFTEST" = "y" ] && cdebug "此处注释了cp 仅供调试使用"
     [ "$IFTEST" = "n" ] && rm -rf ./CURDOTFILES/* && cinfo "rm -rf ./CURDOTFILES/*"
     for key in "${!allConfigMap[@]}"; do
-        mkdir -p $CURDOTFILES/$key
-        for file in "${allConfigMap[$key]}"; do
-            cinfo "==> $key/$file : [y]"
-            [ "$IFTEST" = "n" ] && cp $TEMP/$key/$file $CURDOTFILES/$key/$file && cinfo "cp $TEMP/$key/$file $CURDOTFILES/$key/$file"
-            [ "$IFTEST" = "y" ] && cdebug "cp $TEMP/$key/$file $CURDOTFILES/$key/$file"
+        mkdir -p "$CURDOTFILES/$key"
+        # 将字符串转换为数组
+        eval "files=(${allConfigMap[$key]})"
+        for file in "${files[@]}"; do
+            if [ "$IFTEST" = "n" ]; then
+                cp "$TEMP/$key/$file" "$CURDOTFILES/$key/$file"
+                if [ $? -eq 0 ]; then
+                    cinfo "==> $key/$file : [y]" # cinfo "cp $TEMP/$key/$file $CURDOTFILES/$key/$file"
+                else
+                    cerror "==> $key/$file : [n] Failed to copy $TEMP/$key/$file to $CURDOTFILES/$key/$file"
+                fi
+            elif [ "$IFTEST" = "y" ]; then
+                cdebug "cp $TEMP/$key/$file $CURDOTFILES/$key/$file"
+            fi
         done
     done
     cd $CURDOTFILES
@@ -134,10 +143,19 @@ if [[ $ifER -eq 0 ]]; then
     [ "$IFTEST" = "y" ] && cdebug "此处注释了rm 仅供调试使用"
     [ "$IFTEST" = "n" ] && rm -rf ./CURDOTFILES/* && cinfo "rm -rf ./CURDOTFILES/*"
     for key in "${!allConfigMap[@]}"; do
-        for file in "${allConfigMap[$key]}"; do
-            cinfo "==> 删除 $key/$file"
-            [ "$IFTEST" = "n" ] && rm -f $CURDOTFILES/$key/$file && cinfo "rm -f $CURDOTFILES/$key/$file"
-            [ "$IFTEST" = "y" ] && cdebug "rm -f $CURDOTFILES/$key/$file"
+        # 将字符串转换为数组
+        eval "files=(${allConfigMap[$key]})"
+        for file in "${files[@]}"; do
+            if [ "$IFTEST" = "n" ]; then
+                rm -f "$CURDOTFILES/$key/$file"
+                if [ $? -eq 0 ]; then
+                    cinfo "==> $key/$file : [y]"  # cinfo "rm -f $CURDOTFILES/$key/$file"
+                else
+                    cerror "==> $key/$file : [n]  Failed to delete $CURDOTFILES/$key/$file"
+                fi
+            elif [ "$IFTEST" = "y" ]; then
+                cdebug "rm -f $CURDOTFILES/$key/$file"
+            fi
         done
     done
     cd $CURDOTFILES
@@ -257,7 +275,7 @@ cat << 'EOF' >> $TEMP/README.md
 
 5. **执行安装和配置**：最后通过运行 `install.sh`、`uninstall.sh`、`update.sh` 执行实际的安装、卸载、更新操作。只有当所有软件都成功安装后才执行配置文件的生成，以保证安装和配置的一致性
 
-6. **配置备份和回滚**：备份所有历史配置文件至 history 目录，便于错误发生时快速回滚
+6. **配置备份和回滚**：备份所有历史配置文件至 backup 目录，便于错误发生时快速回滚
 
 ## 将来可能更新的功能
 

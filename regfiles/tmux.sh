@@ -1,36 +1,44 @@
 #!/bin/bash
 
+# VERSION: 1
+
 tmux_info(){
-    echo "tmux: A terminal multiplexer."
+    echo "终端多路复用"
 }
 
 tmux_deps(){
-    return 1
+    echo "__predeps__"
+}
+tmux_check(){
+cmdCheck "tmux"
+return $?
 }
 
-tmux_check(){
-    cmdCheck "tmux"
-    return $?
-}
 
 tmux_install(){
-cat << EOF >> $INSTALL
-$(genSignS "tmux")
-sudo apt-get install tmux -y
-$(genSignE "tmux")
+genSignS "tmux" $INSTALL
+cat << 'EOF' >> $INSTALL
+minfo "......正在安装tmux......"
+if tmux_check; then
+    cwarn "tmux已经安装，不再执行安装操作"
+else
+sudo apt install tmux -y
 
+fi
 EOF
+genSignE "tmux" $INSTALL
 }
 
 tmux_config(){
-# cat << EOF >> $ZSHRC
-# $(genSignS "tmux")
-# $(genSignE "tmux")
+# 加入配置文件更新映射
+declare -A config_map=(
+    ["."]=".tmux.conf"
+)
 
-# EOF
+add_configMap config_map
 
-OTHERRC+=(".tmux.conf")
-cat << EOF >> $TEMP/.tmux.conf
+# 配置文件 ./.tmux.conf 
+cat << 'EOF' >> $TEMP/./.tmux.conf
 # 设置鼠标支持
 set -g mouse on
 
@@ -52,15 +60,5 @@ bind l select-pane -R
 # 而在非复制模式下使用 Ctrl-b + hjkl 在窗格间切换
 
 EOF
+return 0
 }
-
-tmux_uninstall(){
-cat << EOF >> $UNINSTALLSC
-$(genSignS "tmux")
-echo "tmux uninstalling does not support yet."
-$(genSignE "tmux")
-
-EOF
-}
-
-# ----
