@@ -1,5 +1,9 @@
 #!/bin/bash
 
+__pre_pwd=$(pwd)
+script_dir=$(dirname "$0")
+cd $script_dir
+
 # 设置目录信息
 PWD=$(pwd)
 TEMP=$PWD/temp
@@ -240,7 +244,7 @@ main() {
     # .............................................................
     # 3. 交互式配置
     # .............................................................
-    while true; do
+    # while true; do 一次循环后默认就退出了
         info_install_list # 打印安装信息
         minfo "......交互式配置......"
         cecho YELLOW_BOLD "A/1-创建注册文件"
@@ -319,8 +323,10 @@ main() {
                 cerror "输入错误"
                 ;;
         esac
-    done
+    # done
     csuccess "==========config.sh========= END..."
 }
 
 main "$@"
+
+cd $__pre_pwd # 返回原目录

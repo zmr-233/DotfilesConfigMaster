@@ -32,6 +32,7 @@
 | __predeps__ | 预先安装的软件，例如stow |
 | git | 分布式版本控制系统 |
 | nvim | 直接用的小彭老师开箱即用nvim配置 |
+| strace | 用于追踪syscall的工具 |
 | tmux | 终端多路复用 |
 | zsh | 功能强大的命令行Shell |
 | proxy | 保留代理的sudop |

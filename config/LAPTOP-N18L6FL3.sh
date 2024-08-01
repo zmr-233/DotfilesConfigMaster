@@ -5,6 +5,7 @@ declare -g -a recordInstall=(
 "nvim" 
 "tmux" 
 "zsh" 
+"strace" 
 "proxy" 
 "ssh" 
 "zshplugins" 
