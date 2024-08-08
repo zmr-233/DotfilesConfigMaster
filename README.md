@@ -44,6 +44,7 @@
 | miniconda | 轻量级的Python发行版和包管理系统 |
 | pipx | 用于全局安装和管理Python应用程序的工具 |
 | rg | 快速搜索文件内容的命令行工具 |
+| rust | Rust Programming Language |
 | fzf | 命令行模糊查找工具 |
 
 ## 执行逻辑

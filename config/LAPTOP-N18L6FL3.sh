@@ -3,9 +3,9 @@ declare -g -a recordInstall=(
 "__predeps__" 
 "git" 
 "nvim" 
+"strace" 
 "tmux" 
 "zsh" 
-"strace" 
 "proxy" 
 "ssh" 
 "zshplugins" 
@@ -15,6 +15,7 @@ declare -g -a recordInstall=(
 "miniconda" 
 "pipx" 
 "rg" 
+"rust" 
 "fzf" 
 )
 
@@ -30,6 +31,7 @@ declare -g -a recordConfig=(
 "miniconda" 
 "pipx" 
 "rg" 
+"rust" 
 "fzf" 
 )
 
