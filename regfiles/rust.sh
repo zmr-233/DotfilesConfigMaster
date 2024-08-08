@@ -51,3 +51,14 @@ EOF
 genSignE rust $TEMP/./.zshrc
 return 0
 }
+
+rust_update(){
+genSignS "rust" $UPDATE
+cat << 'EOF' >> $UPDATE
+
+minfo "......正在升级rust......"
+rustup update
+
+EOF
+genSignE "rust" $UPDATE
+}
