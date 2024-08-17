@@ -417,7 +417,7 @@ safeBackup() {
         mkdir -p "$historyDir"
         # 生成备份文件名
         local backupName="$(date +%Y%m%d%H%M).${fileName}.bak"
-        mv "$targetDir/$fileName" "$historyDir/$backupName"
+        cp "$targetDir/$fileName" "$historyDir/$backupName"
         cwarn "Target file exists. Backup created as $historyDir/$backupName"
     fi
 }

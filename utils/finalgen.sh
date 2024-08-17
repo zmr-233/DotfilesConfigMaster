@@ -46,7 +46,20 @@ for file in "${recordInstall[@]}"; do
     fi
 done
 
+declare -i stillInstall=0
 if [[ $ifER -eq 0 ]]; then
+    stillInstall=1
+else
+    cerror "安装失败 未安装个数${ifER}"
+    if readReturn "是否强制继续安装？[y/n]";then
+        stillInstall=1
+    else
+        cabort "安装失败,退出"
+        exit 1
+    fi
+fi
+
+if [[ $stillInstall -eq 1 ]]; then
     csuccess "安装成功，准备更新配置文件"
     [ "$IFTEST" = "y" ] && cdebug "此处注释了cp 仅供调试使用"
     [ "$IFTEST" = "n" ] && rm -rf ./CURDOTFILES/* && cinfo "rm -rf ./CURDOTFILES/*"
@@ -76,9 +89,7 @@ if [[ $ifER -eq 0 ]]; then
     echo "#/bin/bash" > $CONFIGP/$(hostname).sh
     saveArray recordInstall $CONFIGP/$(hostname).sh "-g"
     saveArray recordConfig $CONFIGP/$(hostname).sh "-g"
-    csuccess "......ALL_DONE......"   
-else
-    cerror "安装失败 未安装个数${ifER}"
+    csuccess "......ALL_DONE......"
 fi
 # ===============================================
 EOF
