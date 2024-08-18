@@ -35,6 +35,7 @@
 | strace | 用于追踪syscall的工具 |
 | tmux | 终端多路复用 |
 | zsh | 功能强大的命令行Shell |
+| zstree | 是zmr233写的类似于pstree用于显示进程树的工具 |
 | proxy | 保留代理的sudop |
 | ssh | Secure Shell这里加载私钥的配置 |
 | zshplugins | oh-my-zsh管plugins=(插件 |
