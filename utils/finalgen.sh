@@ -228,6 +228,7 @@ EOF
 }
 
 finalgen_readme(){
+    minfo "......最终合并生成README.md......"
 cat << 'EOF' >> $TEMP/README.md
 # DotfilesConfigMaster
 
@@ -301,4 +302,5 @@ cat << 'EOF' >> $TEMP/README.md
 
 
 EOF
+    csuccess "README.md 生成成功"
 }

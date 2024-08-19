@@ -65,6 +65,7 @@ declare -a CONFIG_LIST
 SILENT_INSTALL=n # 是否静默安装
 DEB=n # 是否开启调试模式
 IFTEST=n # 是否模拟安装
+FINAL_EXECUTE=""
 
 # 加载实用函数
 for script in $UTILSP/*.sh; do
@@ -75,50 +76,20 @@ done
 # final_config
 # final_install
 
-
-other_methods(){
-    while true; do
-        minfo "......其他特殊操作......"
-        cnote "这些特殊函数基本上不具有可移植性，纯粹是为了zmr233方便装机而服务的"
-        cecho YELLOW_BOLD "A/1-更换清华源"
-        cecho YELLOW_BOLD "B/2-为github生成ssh密钥对"
-        cecho YELLOW_BOLD "C/3-无条件安装+配置整个regFiles"
-        cecho YELLOW_BOLD "Q/0-退出"
-        readNoSpace selecT "输入数字/大小写字符进行选择"
-        
-        case $selecT in
-            A|a|1)
-                __predeps___change_repository
-                ;;
-            B|b|2)
-                ssh_method_gitssh
-                ;;
-            C|c|3)
-                __silent__install_config_all
-                finalgen_installsh
-                cwarn "强烈建议自行检查install.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
-                if readReturn "是否不检查直接执行install.sh?"; then
-                    cline "YELLOW" "倒计时后执行: " && countdown 5
-                    minfo $'\n\n\n\n\n'"=================================执行install.sh================================="
-                    $PWD/install.sh && csuccess "install.sh安装成功" || cerror "install.sh安装失败"
-                else
-                    cinfo "请手动执行 $PWD/install.sh"
-                fi
-                ;;
-            Q|q|0)
-                minfo "退出"
-                break
-                ;;
-            *)
-                cerror "输入错误，请重新输入"
-                ;;
-        esac
-    done
-    # 覆盖install.sh
-    if [[ -f $fileName ]]; then
-        safeOverwrite install.sh $TEMP $PWD
+# 用于执行最后的操作
+final_execute(){ 
+    if [[ -z $FINAL_EXECUTE ]]; then
+        return
     fi
-    chmod +x $PWD/install.sh
+    cwarn "强烈建议自行检查$FINAL_EXECUTE.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
+    if readReturn "是否不检查直接执行$FINAL_EXECUTE.sh?"; then
+        cline "YELLOW" "倒计时后执行: " && countdown 5
+        minfo $'\n\n\n\n\n'"=================================执行uninstall.sh================================="
+        $PWD/$FINAL_EXECUTE.sh && csuccess "$FINAL_EXECUTE.sh执行完成" || cerror "$FINAL_EXECUTE.sh执行失败"
+    else
+        cinfo "请手动执行 $PWD/$FINAL_EXECUTE.sh"
+    fi
+    FINAL_EXECUTE=""
 }
 
 zmr233tools(){
@@ -189,6 +160,51 @@ parse_args() {
     done
 }
 
+other_methods(){
+    while true; do
+        minfo "......其他特殊操作......"
+        cnote "这些特殊函数基本上不具有可移植性，纯粹是为了zmr233方便装机而服务的"
+        cecho YELLOW_BOLD "A/1-更换清华源"
+        cecho YELLOW_BOLD "B/2-为github生成ssh密钥对"
+        cecho YELLOW_BOLD "C/3-无条件安装+配置整个regFiles"
+        cecho YELLOW_BOLD "D/4-无条件仅配置\$hostname.sh"
+        cecho YELLOW_BOLD "Q/0-退出"
+        readNoSpace selecT "输入数字/大小写字符进行选择"
+        
+        case $selecT in
+            A|a|1)
+                __predeps___change_repository
+                ;;
+            B|b|2)
+                ssh_method_gitssh
+                ;;
+            C|c|3)
+                __silent__install_config_all
+                finalgen_installsh
+                FINAL_EXECUTE="install"
+                ;;
+            D|d|4)
+                __silent__config_hostname_all
+                finalgen_installsh
+                FINAL_EXECUTE="install"
+                ;;
+            Q|q|0)
+                minfo "退出"
+                break
+                ;;
+            *)
+                cerror "输入错误，请重新输入"
+                ;;
+        esac
+        final_execute
+    done
+    # 覆盖install.sh
+    if [[ -f $fileName ]]; then
+        safeOverwrite install.sh $TEMP $PWD
+    fi
+    chmod +x $PWD/install.sh
+}
+
 main() {
     zmr233tools
     welcome
@@ -244,7 +260,7 @@ main() {
     # .............................................................
     # 3. 交互式配置
     # .............................................................
-    # while true; do 一次循环后默认就退出了
+    while true; do # 一次循环后默认就退出了
         info_install_list # 打印安装信息
         minfo "......交互式配置......"
         cecho YELLOW_BOLD "A/1-创建注册文件"
@@ -265,55 +281,24 @@ main() {
             B|b|2)
                 info_config_install
                 finalgen_installsh
-                cwarn "强烈建议自行检查install.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
-                if readReturn "是否不检查直接执行install.sh?"; then
-                    cline "YELLOW" "倒计时后执行: " && countdown 5
-                    minfo $'\n\n\n\n\n'"=================================执行install.sh================================="
-                    $PWD/install.sh && csuccess "install.sh安装成功" || cerror "install.sh安装失败"
-                else
-                    cinfo "请手动执行 $PWD/install.sh"
-                fi
+                FINAL_EXECUTE="install"
                 ;;
             C|c|3)
                 info_uninstall
                 finalgen_uninstallsh
-                cwarn "强烈建议自行检查uninstall.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
-                if readReturn "是否不检查直接执行uninstall.sh?"; then
-                    cline "YELLOW" "倒计时后执行: " && countdown 5
-                    minfo $'\n\n\n\n\n'"=================================执行uninstall.sh================================="
-                    $PWD/uninstall.sh && csuccess "uninstall.sh卸载成功" || cerror "uninstall.sh卸载失败"
-                else
-                    cinfo "请手动执行 $PWD/uninstall.sh"
-                fi
+                FINAL_EXECUTE="uninstall"
                 ;;
             D|d|4)
                 info_update
                 finalgen_updatesh
-                cwarn "强烈建议自行检查update.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
-                if readReturn "是否不检查直接执行update.sh?"; then
-                    cline "YELLOW" "倒计时后执行: " && countdown 5
-                    minfo $'\n\n\n\n\n'"=================================执行update.sh================================="
-                    $PWD/update.sh && csuccess "update.sh升级成功" || cerror "update.sh升级成功"
-                else
-                    cinfo "请手动执行 $PWD/update.sh"
-                fi            
+                FINAL_EXECUTE="update"        
                 ;;
             E|e|5)
                 finalgen_readme
                 mv $TEMP/README.md $PWD/README.md
                 ;;
             Z|z)
-                other_methods
-                if [[ $? -eq 0 ]]; then
-                    cwarn "强烈建议自行检查install.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
-                    if readReturn "是否不检查直接执行install.sh?"; then
-                        cline "YELLOW" "倒计时后执行: " && countdown 5
-                        minfo $'\n\n\n\n\n'"=================================执行install.sh================================="
-                        $PWD/install.sh && csuccess "install.sh安装成功" || cerror "install.sh安装失败"
-                    else
-                        cinfo "请手动执行 $PWD/install.sh"
-                    fi   
-                fi         
+                other_methods        
                 ;;
             Q|q|0)
                 minfo "退出"
@@ -323,7 +308,8 @@ main() {
                 cerror "输入错误"
                 ;;
         esac
-    # done
+        final_execute
+    done
     csuccess "==========config.sh========= END..."
 }
 

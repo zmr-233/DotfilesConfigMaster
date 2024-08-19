@@ -66,7 +66,7 @@ bind l select-pane -R
 # 具体见https://stackoverflow.com/questions/41783367/tmux-tmux-true-color-is-not-working-properly
 # set -as terminal-features ",xterm*:RGB"
 EOF
-    if [ -n "$TMUX" ]; then
+    if [[ "$TERM" == *tmux* ]]; then
         cerror "请在tmux外部运行 echo \$TERM 来查看你的终端类型"
         cerror "再手动修改~/.tmux.conf，否则不会显示24-bits真色彩"
     else

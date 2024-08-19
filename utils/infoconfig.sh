@@ -376,15 +376,16 @@ info_install_list() {
     # 处理额外的项（如果有）
     echo ""
     cecho GREEN_BOLD  "========其余未安装项========"
-    count=0
+    count=-1
 
     for item in "${regFiles[@]}"; do
         # 每输出4个项后换行
         if (( count % max_per_line == 0 )) && (( count > 0 )); then
             echo "" # 新行
             cline "DIM" "==> "
-        elif (( count  == 0 )); then
+        elif (( count  == -1 )); then
             cline "DIM" "==> "
+            count=0
         fi
         # 跳过已经存在于recordInstallMap的项
         if [[ -z ${recordInstallMap[$item]} ]]; then
@@ -392,15 +393,14 @@ info_install_list() {
             if [[ ${ifInstall[$item]} == "y" ]]; then
                 echo ""
                 cwarn "==> 你实际上安装了，但是没有配置在$(hostname).sh中: $item"
-                count=-1
+                count=0
             else
                 cline YELLOW "$item "
                 cline RED_BOLD "[n]"
                 cline DIM "......."
+                ((count++))
             fi
         fi
-
-        ((count++))
     done
     
     echo ""

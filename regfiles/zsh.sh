@@ -102,5 +102,19 @@ if [[ $WSLTYPE == "WSL2" ]]; then
     }
 fi
 EOF
+
+# 专门用于处理jyy os 的AbstractMachine配置
+# 详情见https://jyywiki.cn/AbstractMachine/
+if [ -d "$HOME/1_GitProject/1_jyyos/l0_am/abstract-machine" ]; then
+cat << 'EOF' >> $TEMP/./.zshrc
+
+# 专门用于处理jyy os 的AbstractMachine配置
+# 详情见https://jyywiki.cn/AbstractMachine/
+export AM_HOME="$HOME/1_GitProject/1_jyyos/l0_am/abstract-machine"
+
+EOF
+else
+    cwarn "没有找到jyy os的AbstractMachine配置, 跳过..."
+fi
 return 0
 }
