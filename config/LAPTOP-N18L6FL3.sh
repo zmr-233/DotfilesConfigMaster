@@ -17,6 +17,7 @@ declare -g -a recordInstall=(
 "pipx" 
 "rg" 
 "rust" 
+"valgrind" 
 "fzf" 
 )
 
@@ -35,5 +36,6 @@ declare -g -a recordConfig=(
 "rg" 
 "rust" 
 "fzf" 
+"valgrind" 
 )
 

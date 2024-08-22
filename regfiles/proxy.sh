@@ -74,6 +74,8 @@ proxy enable
 # add sudop alias
 alias sudop='sudo --preserve-env=all_proxy,ALL_PROXY,ftp_proxy,FTP_PROXY,http_proxy,HTTP_PROXY,https_proxy,HTTPS_PROXY'
 
+# add sudo alias
+alias sudo='sudop'
 EOF
 return 0
 }

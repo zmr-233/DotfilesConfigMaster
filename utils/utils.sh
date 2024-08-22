@@ -202,10 +202,10 @@ resolve_configFiles() {
 add_configMap(){
     declare -n config_map_=$1
     for key in "${!config_map_[@]}"; do
-        local skey=$key
-        if [[ $skey == "." ]];then
-            skey="_dot_"
-        fi
+        # 将 key 中的 '.' 替换为 '_dot_'，将 '/' 替换为 '_slash_'
+        local skey=${key//./_dot_}
+        skey=${skey//\//_slash_}
+        
         # 如果 allConfigMap 中还没有这个 key
         if [[ -z "${allConfigMap[$key]}" ]]; then
             allConfigMap[$key]="${config_map_[$key]}"

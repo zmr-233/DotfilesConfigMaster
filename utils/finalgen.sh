@@ -29,9 +29,11 @@ cat <<EOF >> $fileName
 # ===============================================
 CURDOTFILES=$CURDOTFILES
 TEMP=$TEMP
-PWD=$PWD
+OPWD=$OPWD
 CONFIGP=$CONFIGP
 IFTEST=${IFTEST:-n}
+BACKUPP=$BACKUPP
+AFTERINSTALL=$AFTERINSTALL
 EOF
 
 cat << 'EOF' >> $fileName
@@ -78,17 +80,30 @@ if [[ $stillInstall -eq 1 ]]; then
             elif [ "$IFTEST" = "y" ]; then
                 cdebug "cp $TEMP/$key/$file $CURDOTFILES/$key/$file"
             fi
+            if [ -f "$HOME/$key/$file" ] && [ ! -L "$HOME/$key/$file" ]; then
+                if readReturn "文件$HOME/$key/$file已存在，是否备份后删除？[y/n]"; then
+                    safeBackup "$HOME/$key/$file" "$CURDOTFILES" "$key"
+                    rm "$HOME/$key/$file"
+                else
+                    cwarn "文件$HOME/$key/$file未删除"
+                fi
+            fi
         done
     done
-    cd $CURDOTFILES
     minfo "......配置文件创建符号链接......"
-    [ "$IFTEST" = "n" ] && stow -R -t ~ . && cinfo "> stow -R -t ~ ."
-    [ "$IFTEST" = "y" ] && cdebug "此处注释了stow 仅供调试使用 stow -R -t ~ ."
-    cd $PWD
+    cd $CURDOTFILES
+    # 使用了一个高级技巧 https://www.reddit.com/r/linux4noobs/comments/b5ig2h/is_there_any_way_to_force_gnu_stow_to_overwrite/
+    # 用来强制覆盖现有文件
+    [ "$IFTEST" = "n" ] && stow --adopt -R -t ~ . && cinfo "> stow --adopt -R -t ~ ."
+    [ "$IFTEST" = "y" ] && cdebug "此处注释了stow 仅供调试使用 stow --adopt -R -t ~ ."
+    cd $OPWD
     minfo "......合并生成$(hostname).sh......"
     echo "#/bin/bash" > $CONFIGP/$(hostname).sh
     saveArray recordInstall $CONFIGP/$(hostname).sh "-g"
     saveArray recordConfig $CONFIGP/$(hostname).sh "-g"
+    minfo "......处理installafter.sh....."
+    minfo "$OPWD"
+    [ -f "$OPWD/installafter.sh" ] && $OPWD/installafter.sh
     csuccess "......ALL_DONE......"
 fi
 # ===============================================
@@ -96,10 +111,15 @@ EOF
 
     # 覆盖install.sh
     if [[ -f $fileName ]]; then
-        safeOverwrite install.sh $TEMP $PWD
+        safeOverwrite install.sh $TEMP $OPWD
     fi
+    chmod +x $OPWD/install.sh
 
-    chmod +x $PWD/install.sh
+    # 覆盖installafter.sh
+    if [[ -f $AFTERINSTALL ]]; then
+        safeOverwrite installafter.sh $TEMP $OPWD
+    fi
+    chmod +x $OPWD/installafter.sh
 }
 
 # 生成卸载脚本
@@ -132,7 +152,7 @@ cat <<EOF >> $fileName
 # ===============================================
 CURDOTFILES=$CURDOTFILES
 TEMP=$TEMP
-PWD=$PWD
+OPWD=$OPWD
 CONFIGP=$CONFIGP
 IFTEST=${IFTEST:-n}
 EOF
@@ -171,9 +191,10 @@ if [[ $ifER -eq 0 ]]; then
     done
     cd $CURDOTFILES
     minfo "......删除符号链接......"
-    [ "$IFTEST" = "n" ] && stow -D -t ~ .
-    [ "$IFTEST" = "y" ] && cdebug "此处注释了stow 仅供调试使用 stow -D -t ~ ."
-    cd $PWD
+    # [ "$IFTEST" = "n" ] && stow -D -t ~ .
+    # [ "$IFTEST" = "y" ] && cdebug "此处注释了stow 仅供调试使用 stow -D -t ~ ."
+    cdebug "有bug, 反正不能用-D选项，此处注释了"
+    cd $OPWD
     minfo "......合并生成$(hostname)_uninstall.sh......"
     echo "#/bin/bash" > $CONFIGP/$(hostname)_uninstall.sh
     saveArray recordInstall $CONFIGP/$(hostname)_uninstall.sh "-g"
@@ -187,10 +208,10 @@ EOF
 
     # 覆盖uninstall.sh
     if [[ -f $fileName ]]; then
-        safeOverwrite uninstall.sh $TEMP $PWD
+        safeOverwrite uninstall.sh $TEMP $OPWD
     fi
 
-    chmod +x $PWD/uninstall.sh
+    chmod +x $OPWD/uninstall.sh
 }
 
 finalgen_updatesh(){
@@ -208,7 +229,7 @@ cat <<EOF >> $fileName
 # ===============================================
 CURDOTFILES=$CURDOTFILES
 TEMP=$TEMP
-PWD=$PWD
+OPWD=$OPWD
 CONFIGP=$CONFIGP
 IFTEST=${IFTEST:-n}
 EOF
@@ -221,10 +242,10 @@ EOF
 
     # 覆盖update.sh
     if [[ -f $fileName ]]; then
-        safeOverwrite update.sh $TEMP $PWD
+        safeOverwrite update.sh $TEMP $OPWD
     fi
 
-    chmod +x $PWD/update.sh
+    chmod +x $OPWD/update.sh
 }
 
 finalgen_readme(){

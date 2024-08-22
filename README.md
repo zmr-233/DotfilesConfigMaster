@@ -46,6 +46,7 @@
 | pipx | 用于全局安装和管理Python应用程序的工具 |
 | rg | 快速搜索文件内容的命令行工具 |
 | rust | Rust Programming Language |
+| valgrind | 用于检测程序中的内存错误和性能问题的工具 |
 | fzf | 命令行模糊查找工具 |
 
 ## 执行逻辑

@@ -358,12 +358,12 @@ cat << 'EOF' >> $TEMP/./.p10k.zsh
   # POWERLEVEL9K_DIR_CLASSES allows you to specify custom icons and colors for different
   # directories. It must be an array with 3 * N elements. Each triplet consists of:
   #
-  #   1. A pattern against which the current directory ($PWD) is matched. Matching is done with
+  #   1. A pattern against which the current directory ($OPWD) is matched. Matching is done with
   #      extended_glob option enabled.
   #   2. Directory class for the purpose of styling.
   #   3. An empty string.
   #
-  # Triplets are tried in order. The first triplet whose pattern matches $PWD wins.
+  # Triplets are tried in order. The first triplet whose pattern matches $OPWD wins.
   #
   # If POWERLEVEL9K_DIR_SHOW_WRITABLE is set to v3, non-writable and non-existent directories
   # acquire class suffix _NOT_WRITABLE and NON_EXISTENT respectively.

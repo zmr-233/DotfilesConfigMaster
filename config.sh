@@ -1,18 +1,18 @@
 #!/bin/bash
 
-__pre_pwd=$(pwd)
+__pre_OPWD=$(pwd)
 script_dir=$(dirname "$0")
 cd $script_dir
 
 # 设置目录信息
-PWD=$(pwd)
-TEMP=$PWD/temp
-SRCP=$PWD/src
-UTILSP=$PWD/utils
-CONFIGP=$PWD/config
-REGP=$PWD/regfiles
-CURDOTFILES=$PWD/CURDOTFILES
-BACKUPP=$PWD/backup # $(hostname).$(date +%Y%m%d%H%M)
+OPWD=$(pwd)
+TEMP=$OPWD/temp
+SRCP=$OPWD/src
+UTILSP=$OPWD/utils
+CONFIGP=$OPWD/config
+REGP=$OPWD/regfiles
+CURDOTFILES=$OPWD/CURDOTFILES
+BACKUPP=$OPWD/backup # $(hostname).$(date +%Y%m%d%H%M)
 
 mkdir -p $TEMP
 mkdir -p $SRCP
@@ -24,6 +24,7 @@ mkdir -p $BACKUPP
 
 # 设置文件信息
 INSTALL=$TEMP/install.sh
+AFTERINSTALL=$TEMP/installafter.sh
 UPDATE=$TEMP/update.sh
 UNINSTALL=$TEMP/uninstall.sh
 cat << EOF | tee $INSTALL $UPDATE $UNINSTALL >/dev/null
@@ -83,11 +84,11 @@ final_execute(){
     fi
     cwarn "强烈建议自行检查$FINAL_EXECUTE.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
     if readReturn "是否不检查直接执行$FINAL_EXECUTE.sh?"; then
-        cline "YELLOW" "倒计时后执行: " && countdown 5
+        cline "YELLOW" "倒计时后执行: " && countdown 2
         minfo $'\n\n\n\n\n'"=================================执行uninstall.sh================================="
-        $PWD/$FINAL_EXECUTE.sh && csuccess "$FINAL_EXECUTE.sh执行完成" || cerror "$FINAL_EXECUTE.sh执行失败"
+        $OPWD/$FINAL_EXECUTE.sh && csuccess "$FINAL_EXECUTE.sh执行完成" || cerror "$FINAL_EXECUTE.sh执行失败"
     else
-        cinfo "请手动执行 $PWD/$FINAL_EXECUTE.sh"
+        cinfo "请手动执行 $OPWD/$FINAL_EXECUTE.sh"
     fi
     FINAL_EXECUTE=""
 }
@@ -200,9 +201,9 @@ other_methods(){
     done
     # 覆盖install.sh
     if [[ -f $fileName ]]; then
-        safeOverwrite install.sh $TEMP $PWD
+        safeOverwrite install.sh $TEMP $OPWD
     fi
-    chmod +x $PWD/install.sh
+    chmod +x $OPWD/install.sh
 }
 
 main() {
@@ -246,7 +247,7 @@ main() {
         __info__install
         __info__config
         finalgen_installsh
-        $PWD/install.sh && csuccess "install.sh安装成功" || cerror "install.sh安装失败"
+        $OPWD/install.sh && csuccess "install.sh安装成功" || cerror "install.sh安装失败"
         exit 1
     elif [[ -n $SILENT_ALL ]];then
         cerror "没有找到此hostname文件: $SILENT_ALL.sh"
@@ -295,7 +296,7 @@ main() {
                 ;;
             E|e|5)
                 finalgen_readme
-                mv $TEMP/README.md $PWD/README.md
+                mv $TEMP/README.md $OPWD/README.md
                 ;;
             Z|z)
                 other_methods        
@@ -315,4 +316,4 @@ main() {
 
 main "$@"
 
-cd $__pre_pwd # 返回原目录
+cd $__pre_OPWD # 返回原目录
