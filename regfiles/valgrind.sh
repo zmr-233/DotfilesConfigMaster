@@ -46,13 +46,14 @@ valgrind_bat() {
     local stderr_tmp=$(mktemp)
     local combined_tmp=$(mktemp)
     local merge=false
+    local VALFLAGS="--num-callers --track-origins=yes"
     if [ "$1" = "--merge" ] || [ "$1" = "-m" ]; then
         shift
         merge=true
     fi
 
     { 
-      { valgrind "$@" 2> >(tee "$stderr_tmp" >&2); } | tee "$stdout_tmp"
+      { valgrind "$VALFLAGS" "$@" 2> >(tee "$stderr_tmp" >&2); } | tee "$stdout_tmp"
     } > >(cat -v > "$combined_tmp") 2>&1 | tee -a "$combined_tmp" > /dev/null
 
 
@@ -75,7 +76,7 @@ valgrind_bat() {
     rm "$stdout_tmp" "$stderr_tmp" "$combined_tmp"
 }
 # 用bat给valgrind彩色输出的别名
-alias valgrind=valgrind_bat
+alias val=valgrind_bat
 
 EOF
 genSignE valgrind $TEMP/./.zshrc
