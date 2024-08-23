@@ -32,15 +32,27 @@ genSignE "valgrind" $INSTALL
 valgrind_config(){
 # 加入配置文件更新映射
 declare -A config_map=(
-    ["."]=".zshrc"
+    ["."]=".zshrc .valgrindsh"
     [".config/bat/syntaxes"]="valgrind.sublime-syntax"
 )
+# 注意:使用.valgrindrc会导致valgrind当成参数进行解析
+# 此处使用.valgrindsh
 
 add_configMap config_map
 
-# 配置文件 ./.zshrc 
+# 配置文件 ./.zshrc
 genSignS valgrind $TEMP/./.zshrc
 cat << 'EOF' >> $TEMP/./.zshrc
+# 加载valgrind启动脚本
+[ -f ~/.valgrindsh ] && source ~/.valgrindsh
+EOF
+genSignE valgrind $TEMP/./.zshrc
+
+# 配置文件 ./.valgrindsh
+cat << 'EOF' >> $TEMP/./.valgrindsh
+# 该文件为valgrind的配置选项
+
+# valgrind的默认参数
 VALFLAGS=("--num-callers=40"        # 设置追踪的最大堆栈
           "--track-origins=yes"     # 追踪未初始化行为
           "--read-inline-info=yes"  # 正确显示内嵌函数
@@ -49,6 +61,9 @@ VALFLAGS=("--num-callers=40"        # 设置追踪的最大堆栈
           "--leak-resolution=high"  # 设置内存泄漏报告的分辨率为“高”
           "--trace-children=yes"    #  追踪子进程的内存使用情况
 )
+VALPORT=1500 # 监听的默认端口
+
+# 整合了高亮的valgrind
 valgrind_bat() {
     local stdout_tmp=$(mktemp)
     local stderr_tmp=$(mktemp)
@@ -57,8 +72,13 @@ valgrind_bat() {
     if [ "$1" = "--merge" ] || [ "$1" = "-m" ]; then
         shift
         merge=true
+    elif [ "$1" = "--server" ]; then
+        shift
+        valgrind --log-socket=$(getip):$VALPORT "${VALFLAGS[@]}" "$@"
+        return 0
     fi
-
+    # echo "valgrind ${VALFLAGS[@]} $@"
+    # return 0
     { 
       { valgrind "${VALFLAGS[@]}" "$@" 2> >(tee "$stderr_tmp" >&2); } | tee "$stdout_tmp"
     } > >(cat -v > "$combined_tmp") 2>&1 | tee -a "$combined_tmp" > /dev/null
@@ -82,11 +102,29 @@ valgrind_bat() {
 
     rm "$stdout_tmp" "$stderr_tmp" "$combined_tmp"
 }
+
+
+VALSERVERFLAGS=("--exit-at-zero"        #  当连接进程数降为零时不退出
+)
+
+# 启动监听服务器
+valgrind_server(){
+    local curPORT=${1:-$VALPORT}
+    local log_file=$(mktemp)
+
+    # 输出重定向到临时文件
+    valgrind-listener $curPORT "${VALSERVERFLAGS[@]}" > "$log_file" &
+
+    # 使用 tail -f 来监视日志文件，并通过 bat 输出带颜色的日志
+    # 来源: https://github.com/sharkdp/bat/blob/master/doc/README-zh.md#tail--f
+    tail -f "$log_file" | bat --paging=never --language=valgrind
+}
 # 用bat给valgrind彩色输出的别名
 alias val=valgrind_bat
+# 启动监听服务器
+alias valserver=valgrind_server
 
 EOF
-genSignE valgrind $TEMP/./.zshrc
 
 # 配置文件 .config/bat/syntaxes/valgrind.sublime-syntax 
 cat << 'EOF' >> $TEMP/.config/bat/syntaxes/valgrind.sublime-syntax
