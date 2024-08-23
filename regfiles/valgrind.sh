@@ -104,7 +104,7 @@ valgrind_bat() {
 }
 
 
-VALSERVERFLAGS=("--exit-at-zero"        #  当连接进程数降为零时不退出
+VALSERVERFLAGS=( # "--exit-at-zero"        #  当连接进程数降为零时不退出
 )
 
 # 启动监听服务器
