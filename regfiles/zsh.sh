@@ -96,9 +96,9 @@ if [[ $WSLTYPE == "WSL2" ]]; then
         fi
     }
     # 获取 WSL2 IP 地址
-    showip(){
+    getip(){
         ip_address=$(ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
-        echo "WSL2 IP Address: $ip_address"
+        echo "$ip_address"
     }
 fi
 EOF

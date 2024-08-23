@@ -41,12 +41,12 @@ add_configMap config_map
 # 配置文件 ./.zshrc 
 genSignS valgrind $TEMP/./.zshrc
 cat << 'EOF' >> $TEMP/./.zshrc
+VALFLAGS='--num-callers=20 --track-origins=yes --read-inline-info=yes'
 valgrind_bat() {
     local stdout_tmp=$(mktemp)
     local stderr_tmp=$(mktemp)
     local combined_tmp=$(mktemp)
     local merge=false
-    local VALFLAGS="--num-callers --track-origins=yes"
     if [ "$1" = "--merge" ] || [ "$1" = "-m" ]; then
         shift
         merge=true
