@@ -68,7 +68,7 @@ valgrind_bat() {
         cat "$combined_tmp" | bat --language=valgrind
     else
         if [ -t 1 ]; then
-            cat "$stdout_tmp" | bat --language=valgrind --paging=always
+            cat "$stdout_tmp" | bat --paging=always
         else
             cat "$stdout_tmp"
         fi
