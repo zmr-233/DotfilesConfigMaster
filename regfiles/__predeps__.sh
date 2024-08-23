@@ -24,7 +24,8 @@ minfo "......正在安装__predeps__......"
 if __predeps___check; then
     cwarn "__predeps__已经安装，不再执行安装操作"
 else
-sudo apt install stow build-essential gdb -y
+sudo apt install build-essential gdb -y
+sudo apt-get install stow -y
 
 fi
 EOF
