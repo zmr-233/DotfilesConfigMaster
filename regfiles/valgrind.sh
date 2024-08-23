@@ -175,30 +175,34 @@ file_extensions:
   - val
   - valgrind
 scope: source.val
-first_line_match: 'Memcheck, a memory error detector'
+first_line_match: '==\d+=='
 
 variables:
   basic_types: 'asm|__asm__|auto|bool|_Bool|char|_Complex|double|float|_Imaginary|int|long|short|signed|unsigned|void'
 
 contexts:
   main:
-    # 匹配Valgrind启动信息
-    - match: Memcheck, a memory error detector
-      scope: keyword
-      
-    - match: Copyright \(C\) \d+-\d+, and GNU GPL\'d, by Julian Seward et al.
+    - match: '^==\d+== Copyright \(C\) \d+-\d+,.*'
       scope: comment
-
-    - match: (Using )(Valgrind-3.22.0)( and LibVEX; rerun with -h for copyright info)
+    - match: '^(==\d+==) (Using )(Valgrind-\d+.\d+.\d+)(.*)'
       captures:
-        1: keyword
-        2: support.constant
-        3: keyword
-        
-    - match: "(Command: )(.+)"
+        1: comment
+        2: keyword
+        3: support.constant
+        4: keyword
+    - match: '^(==\d+==) (Command: )(.+)'
       captures:
-        1: keyword
-        2: markup.bold
+        1: comment
+        2: keyword
+        3: markup.bold
+    - match: '^(==\d+==) ([^ ].*)'
+      captures:
+        1: comment
+        2: keyword   
+    - match: '^(==\d+==)  ([^ ].*)'
+      captures:
+        1: comment
+        2: markup.changed    
 
     # 匹配函数调用及内存地址
     - match: '(at|by)\s(0x[0-9A-F]+):\s(.+)\s(\(([^:]+):?(\d*)\))'
@@ -269,7 +273,7 @@ contexts:
     - match: 'For lists of detected and suppressed errors, rerun with: -s'
       scope: keyword 
     # 匹配数字
-    - match: '\b\d+\b'
+    - match: '\d+'
       scope: constant.numeric
 
 EOF
