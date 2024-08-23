@@ -182,99 +182,104 @@ variables:
 
 contexts:
   main:
-    - match: '^==\d+== Copyright \(C\) \d+-\d+,.*'
-      scope: comment
-    - match: '^(==\d+==) (Using )(Valgrind-\d+.\d+.\d+)(.*)'
+    - include: server
+    - include: memcheck
+    - include: callgrind
+    - match: '(==\d+==) (Copyright \(C\) \d+-\d+,.*)'
+      captures:
+        1: comment
+        2: keyword
+    - match: '(==\d+==) (Using )(Valgrind-\d+.\d+.\d+)(.*)'
       captures:
         1: comment
         2: keyword
         3: support.constant
         4: keyword
-    - match: '^(==\d+==) (Command: )(.+)'
+    - match: '(==\d+==) (Command: )(.+)'
       captures:
         1: comment
         2: keyword
         3: markup.bold
-    - match: '^(==\d+==) ([^ ].*)'
+    - match: '(==\d+==)    (at|by)\s(0x[0-9A-Fa-f]+):\s(.+) (\(([^:]+):?\d*\))'
       captures:
         1: comment
-        2: keyword   
-    - match: '^(==\d+==)  ([^ ].*)'
+        2: keyword
+        3: constant.numeric
+        4: entity.name.function
+        5: storage.type
+        6: variable.parameter
+    - match: '(==\d+==) (ERROR SUMMARY:.+)'
       captures:
         1: comment
-        2: markup.changed    
+        2: keyword
 
-    # 匹配函数调用及内存地址
-    - match: '(at|by)\s(0x[0-9A-F]+):\s(.+)\s(\(([^:]+):?(\d*)\))'
-      captures:
-        1: keyword
-        2: constant.numeric
-        3: entity.name.function
-        4: storage.type
-        5: variable.parameter
-
-    - match: ==\d+==
-      scope: comment
-
-    # 匹配内存错误类型
-    - match: 'Conditional jump or move depends on uninitialised value\(s\)'
-      scope: invalid
-      comment: "匹配未初始化值导致的条件跳转或移动"
-
-    - match: 'Use of uninitialised value of size \d+'
-      scope: invalid
-
-    - match: 'Invalid (free|read|write) of size \d+'
-      scope: invalid
-
-    - match: 'Mismatched free\(\)'
-      scope: invalid
-
-    - match: 'Address 0x[0-9A-Fa-f]+ is \d+ bytes inside a block of size \d+ free.?d'
-      scope: invalid
-
-    # 匹配堆内存摘要部分
-    - match: 'HEAP SUMMARY:'
-      scope: markup.heading
-
-    - match: 'total heap usage: \d+ allocs, \d+ frees, \d+ bytes allocated'
-      scope: markup.bold
-
-    - match: 'LEAK SUMMARY:'
-      scope: markup.heading
-
-    - match: 'definitely lost: \d+ bytes in \d+ blocks'
-      scope: markup.changed
-
-    - match: 'indirectly lost: \d+ bytes in \d+ blocks'
-      scope: markup.changed
-
-    - match: 'possibly lost: \d+ bytes in \d+ blocks'
-      scope: markup.changed
-
-    - match: 'still reachable: \d+ bytes in \d+ blocks'
-      scope: markup.inserted
-
-    - match: 'suppressed: \d+ bytes in \d+ blocks'
-      scope: markup.changed
-
-    # 内存地址匹配
-    - match: '0x[0-9A-Fa-f]+'
-      scope: constant.numeric
-
-    # 匹配错误摘要部分
-    - match: 'ERROR SUMMARY: \d+ errors from \d+ contexts \(suppressed: \d+ from \d+\)'
-      scope: message.error
-
-    - match: 'Rerun with --leak-check=full to see details of leaked memory'
-      scope: keyword
-    - match: 'Use --track-origins=yes to see where uninitialised values come from'
-      scope: keyword    
-    - match: 'For lists of detected and suppressed errors, rerun with: -s'
-      scope: keyword 
-    # 匹配数字
+    # Normal Match
+    - match: '==\d+== (?! )' 
+      scope: comment 
+      push: lineA
+ 
+    - match: '==\d+==  (?! )' 
+      scope: comment 
+      push: lineB 
+    
+    - match: '==\d+== {3,}(?! )' 
+      scope: comment 
+      push: lineC
     - match: '\d+'
       scope: constant.numeric
+    - match: '\n'
+      pop: true
+  server:
+    - match: '^(valgrind-listener started at)(.+)'
+      captures:
+        1: variable.parameter
+        2: entity.name.function
+    - match: '^(\()(\d+)(\)) ([\-]+.+)'
+      captures:
+        1: comment
+        2: entity.name.function
+        3: comment
+        4: entity.name.function
+      scope: entity.name.function
+    - match: '^(\()(\d+)(\)) *(?!\-)'
+      captures:
+        1: comment
+        2: entity.name.function
+        3: comment
+      push: main
+  memcheck:
+    - match: '(==\d+==) (Memcheck, a memory error detector)'
+      captures:
+        1: comment
+        2: entity.name.function
+  callgrind:
+    - match: '(==\d+==) (Callgrind, a call-graph generating cache profiler)'
+      captures:
+        1: comment
+        2: entity.name.function   
+  lineA:
+    - match: '\b(0x[0-9A-Fa-f]+|[0-9,]+)\b'
+      scope: constant.numeric
+    - match: '(?:(?!0x[0-9A-Fa-f]+|[0-9,]).)+'
+      scope: variable
+    - match: '\n'
+      pop: true
+
+  lineB:
+    - match: '\b(0x[0-9A-Fa-f]+|[0-9,]+)\b'
+      scope: constant.numeric
+    - match: '(?:(?!0x[0-9A-Fa-f]+|[0-9,]).)+'
+      scope: variable
+    - match: '\n'
+      pop: true
+  
+  lineC:
+    - match: '\b(0x[0-9A-Fa-f]+|[0-9,]+)\b'
+      scope: support.constant
+    - match: '(?:(?!0x[0-9A-Fa-f]+|[0-9,]).)+'
+      scope: string   
+    - match: '\n'
+      pop: true 
 
 EOF
 
