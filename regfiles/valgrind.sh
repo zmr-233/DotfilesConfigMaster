@@ -52,38 +52,76 @@ genSignE valgrind $TEMP/./.zshrc
 cat << 'EOF' >> $TEMP/./.valgrindsh
 # 该文件为valgrind的配置选项
 
-# valgrind的默认参数
-VALFLAGS=("--num-callers=40"        # 设置追踪的最大堆栈
-          "--track-origins=yes"     # 追踪未初始化行为
-          "--read-inline-info=yes"  # 正确显示内嵌函数
-          "--leak-check=full"       # 执行完整的内存泄漏检查,报告所有已分配但未释放的内存
-          "--show-reachable=yes"    # 报告可达的内存块, 即使没有泄露
-          "--leak-resolution=high"  # 设置内存泄漏报告的分辨率为“高”
-          "--trace-children=yes"    #  追踪子进程的内存使用情况
-)
 VALPORT=1500 # 监听的默认端口
+
+# 定义不同工具的参数
+typeset -A MEMCHECK_FLAGS=(
+    "--num-callers" "40"
+    "--track-origins" "yes"
+    "--read-inline-info" "yes"
+    "--leak-check" "full"
+    "--show-reachable" "yes"
+    "--leak-resolution" "high"
+    "--trace-children" "yes"
+)
+
+typeset -A CALLGRIND_FLAGS=(
+    "--dump-instr" "yes"
+    "--collect-jumps" "yes"
+    "--trace-children" "yes"
+)
 
 # 整合了高亮的valgrind
 valgrind_bat() {
+    # 检查当前shell是否为zsh==目前数组定义方式只能在zsh下使用
+    if [[ -z "$ZSH_VERSION" ]]; then
+        echo "Error: This script requires Zsh to run." >&2
+        exit 1
+    fi
     local stdout_tmp=$(mktemp)
     local stderr_tmp=$(mktemp)
     local combined_tmp=$(mktemp)
     local merge=false
-    if [ "$1" = "--merge" ] || [ "$1" = "-m" ]; then
+    local VALFLAGS=()
+
+    if [[ "$1" = "--merge" || "$1" = "-m" ]]; then
         shift
         merge=true
-    elif [ "$1" = "--server" ]; then
+    elif [[ "$1" = "--server" ]]; then
         shift
         valgrind --log-socket=$(getip):$VALPORT "${VALFLAGS[@]}" "$@"
         return 0
     fi
-    # echo "valgrind ${VALFLAGS[@]} $@"
-    # return 0
+
+    # 检测工具类型
+    local tool="memcheck"  # 默认工具
+    for arg in "$@"; do
+        if [[ "$arg" == "--tool="* ]]; then
+            tool="${arg#--tool=}"
+            break
+        fi
+    done
+
+    # 设置对应工具的参数
+    case "$tool" in
+        memcheck)
+            for key value in "${(@kv)MEMCHECK_FLAGS}"; do
+                VALFLAGS+=("$key=$value")
+            done
+            ;;
+        callgrind)
+            for key value in "${(@kv)CALLGRIND_FLAGS}"; do
+                VALFLAGS+=("$key=$value")
+            done
+            ;;
+    esac
+
+    # 执行valgrind命令并捕获输出
     { 
       { valgrind "${VALFLAGS[@]}" "$@" 2> >(tee "$stderr_tmp" >&2); } | tee "$stdout_tmp"
     } > >(cat -v > "$combined_tmp") 2>&1 | tee -a "$combined_tmp" > /dev/null
 
-
+    # 根据终端情况输出结果
     if [ -t 1 ] && [ -t 2 ] && [ "$merge" = "true" ]; then
         cat "$combined_tmp" | bat --language=valgrind
     else
@@ -100,9 +138,9 @@ valgrind_bat() {
         fi
     fi
 
+    # 清理临时文件
     rm "$stdout_tmp" "$stderr_tmp" "$combined_tmp"
 }
-
 
 VALSERVERFLAGS=( # "--exit-at-zero"        #  当连接进程数降为零时不退出
 )
