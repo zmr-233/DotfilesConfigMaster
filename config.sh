@@ -64,6 +64,7 @@ declare -a INSTALL_LIST
 declare -a CONFIG_LIST
 
 SILENT_INSTALL=n # 是否静默安装
+SILENT_HOSTNAME=n # 完全静默安装hostname.sh
 DEB=n # 是否开启调试模式
 IFTEST=n # 是否模拟安装
 FINAL_EXECUTE=""
@@ -78,17 +79,23 @@ done
 # final_install
 
 # 用于执行最后的操作
-final_execute(){ 
+final_execute(){
+    local CHFLAG=$1
     if [[ -z $FINAL_EXECUTE ]]; then
         return
     fi
-    cwarn "强烈建议自行检查$FINAL_EXECUTE.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
-    if readReturn "是否不检查直接执行$FINAL_EXECUTE.sh?"; then
-        cline "YELLOW" "倒计时后执行: " && countdown 2
-        minfo $'\n\n\n\n\n'"=================================执行uninstall.sh================================="
+    if [ -n $CHFLAG ] && [ "$CHFLAG" = "DO_NOT_CHECK" ];then
+        minfo $'\n\n\n\n\n'"=================================执行$FINAL_EXECUTE.sh================================="
         $OPWD/$FINAL_EXECUTE.sh && csuccess "$FINAL_EXECUTE.sh执行完成" || cerror "$FINAL_EXECUTE.sh执行失败"
     else
-        cinfo "请手动执行 $OPWD/$FINAL_EXECUTE.sh"
+        cwarn "强烈建议自行检查$FINAL_EXECUTE.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
+        if readReturn "是否不检查直接执行$FINAL_EXECUTE.sh?"; then
+            cline "YELLOW" "倒计时后执行: " && countdown 2
+            minfo $'\n\n\n\n\n'"=================================执行$FINAL_EXECUTE.sh================================="
+            $OPWD/$FINAL_EXECUTE.sh && csuccess "$FINAL_EXECUTE.sh执行完成" || cerror "$FINAL_EXECUTE.sh执行失败"
+        else
+            cinfo "请手动执行 $OPWD/$FINAL_EXECUTE.sh"
+        fi
     fi
     FINAL_EXECUTE=""
 }
@@ -110,6 +117,21 @@ welcome(){
     echo ""
 }
 
+info_help() {
+  cnote "Usage: script.sh [OPTIONS]"
+  cinput "Options:"
+  cinfo "  -n, --no, --simulate        Set IFTEST=y"
+  cinfo "  -s, --silent                Set SILENT_INSTALL=y"
+  cinfo "  -S, --silent-hostname       Do silently execute hostname.sh"
+  cinfo "  --install=a,b,c,d           Add a, b, c, d to INSTALL_LIST array"
+  cinfo "  --config=a,b,c,d            Add a, b, c, d to CONFIG_LIST array"
+  cinfo "  --istcfg=a,b,c,d            Add a, b, c, d to both INSTALL_LIST and CONFIG_LIST arrays"
+  cinfo "  --install--config=a,b,c,d   Add a, b, c, d to both INSTALL_LIST and CONFIG_LIST arrays"
+  cinfo "  --debug                     Set DEB=y"
+  cinfo "  --all=xxx                   Set SILENT_ALL=xxx"
+  cinfo "  -h, --help                  Display this help message"
+}
+
 parse_args() {
     while [[ "$#" -gt 0 ]]; do
         case $1 in
@@ -120,6 +142,10 @@ parse_args() {
             -s|--silent)
                 SILENT_INSTALL=y
                 cinfo "SILENT_INSTALL set to 'y'"
+                ;;
+            -S|--silent-hostname)
+                SILENT_HOSTNAME=y
+                cinfo "SILENT_HOSTNAME set to 'y'"
                 ;;
             --install=*)
                 IFS=',' read -r -a INSTALL_LIST <<< "${1#*=}"
@@ -200,10 +226,10 @@ other_methods(){
         final_execute
     done
     # 覆盖install.sh
-    if [[ -f $fileName ]]; then
-        safeOverwrite install.sh $TEMP $OPWD
-    fi
-    chmod +x $OPWD/install.sh
+    # if [[ -f $fileName ]]; then
+    #     safeOverwrite install.sh $TEMP $OPWD
+    # fi
+    # chmod +x $OPWD/install.sh
 }
 
 main() {
@@ -257,7 +283,15 @@ main() {
     # 2.加载Hostname配置模块
     register_hostname
 
-
+    
+    if [ "$SILENT_HOSTNAME" = "y" ];then
+        minfo "执行完全静默安装hostname.sh"
+        __silent__config_hostname_all
+        finalgen_installsh
+        FINAL_EXECUTE="install"
+        final_execute "DO_NOT_CHECK"
+        exit 0
+    fi
     # .............................................................
     # 3. 交互式配置
     # .............................................................

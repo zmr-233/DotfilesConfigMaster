@@ -41,7 +41,14 @@ add_configMap config_map
 # 配置文件 ./.zshrc 
 genSignS valgrind $TEMP/./.zshrc
 cat << 'EOF' >> $TEMP/./.zshrc
-VALFLAGS='--num-callers=20 --track-origins=yes --read-inline-info=yes'
+VALFLAGS=("--num-callers=40"        # 设置追踪的最大堆栈
+          "--track-origins=yes"     # 追踪未初始化行为
+          "--read-inline-info=yes"  # 正确显示内嵌函数
+          "--leak-check=full"       # 执行完整的内存泄漏检查,报告所有已分配但未释放的内存
+          "--show-reachable=yes"    # 报告可达的内存块, 即使没有泄露
+          "--leak-resolution=high"  # 设置内存泄漏报告的分辨率为“高”
+          "--trace-children=yes"    #  追踪子进程的内存使用情况
+)
 valgrind_bat() {
     local stdout_tmp=$(mktemp)
     local stderr_tmp=$(mktemp)
@@ -53,21 +60,21 @@ valgrind_bat() {
     fi
 
     { 
-      { valgrind "$VALFLAGS" "$@" 2> >(tee "$stderr_tmp" >&2); } | tee "$stdout_tmp"
+      { valgrind "${VALFLAGS[@]}" "$@" 2> >(tee "$stderr_tmp" >&2); } | tee "$stdout_tmp"
     } > >(cat -v > "$combined_tmp") 2>&1 | tee -a "$combined_tmp" > /dev/null
 
 
     if [ -t 1 ] && [ -t 2 ] && [ "$merge" = "true" ]; then
-        cat "$combined_tmp" | bat
+        cat "$combined_tmp" | bat --language=valgrind
     else
         if [ -t 1 ]; then
-            cat "$stdout_tmp" | bat --paging=always
+            cat "$stdout_tmp" | bat --language=valgrind --paging=always
         else
             cat "$stdout_tmp"
         fi
 
         if [ -t 2 ]; then
-            cat "$stderr_tmp" | bat >&2
+            cat "$stderr_tmp" | bat --language=valgrind >&2
         else
             cat "$stderr_tmp" >&2
         fi

@@ -308,19 +308,6 @@ info_update(){
 }
 
 #====   Help Function   ====
-info_help() {
-  cnote "Usage: script.sh [OPTIONS]"
-  cinput "Options:"
-  cinfo "  -n, --no, --simulate        Set IFTEST=y"
-  cinfo "  -s, --silent                Set SILENT_INSTALL=y"
-  cinfo "  --install=a,b,c,d           Add a, b, c, d to INSTALL_LIST array"
-  cinfo "  --config=a,b,c,d            Add a, b, c, d to CONFIG_LIST array"
-  cinfo "  --istcfg=a,b,c,d            Add a, b, c, d to both INSTALL_LIST and CONFIG_LIST arrays"
-  cinfo "  --install--config=a,b,c,d   Add a, b, c, d to both INSTALL_LIST and CONFIG_LIST arrays"
-  cinfo "  --debug                     Set DEB=y"
-  cinfo "  --all=xxx                   Set SILENT_ALL=xxx"
-  cinfo "  -h, --help                  Display this help message"
-}
 
 # 打印安装信息
 info_install_list() {
