@@ -17,8 +17,13 @@ declare -g -a recordInstall=(
 "pipx" 
 "rg" 
 "rust" 
+"ysyx" 
 "valgrind" 
 "fzf" 
+"ysyx_systemc" 
+"ysyx_gtkwave" 
+"ysyx_z3" 
+"ysyx_verilator" 
 )
 
 declare -g -a recordConfig=(
@@ -37,5 +42,10 @@ declare -g -a recordConfig=(
 "rust" 
 "fzf" 
 "valgrind" 
+"ysyx" 
+"ysyx_systemc" 
+"ysyx_gtkwave" 
+"ysyx_z3" 
+"ysyx_verilator" 
 )
 

@@ -46,8 +46,13 @@
 | pipx | 用于全局安装和管理Python应用程序的工具 |
 | rg | 快速搜索文件内容的命令行工具 |
 | rust | Rust Programming Language |
+| ysyx | 用作环境变量配置 |
 | valgrind | 用于检测程序中的内存错误和性能问题的工具 |
 | fzf | 命令行模糊查找工具 |
+| ysyx_gtkwave | 波形查看器 |
+| ysyx_systemc | 用于系统级设计和硬件建模的开源硬件描述语言HDL |
+| ysyx_z3 | 是微软研究院的一个定理证明器 |
+| ysyx_verilator | 最快的 Verilog/SystemVerilog 模拟器 |
 
 ## 执行逻辑
 

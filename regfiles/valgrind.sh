@@ -22,7 +22,7 @@ minfo "......正在安装valgrind......"
 if valgrind_check; then
     cwarn "valgrind已经安装，不再执行安装操作"
 else
-sudo apt install valgrind -y
+sudo apt install valgrind kcachegrind -y
 
 fi
 EOF
@@ -54,43 +54,38 @@ cat << 'EOF' >> $TEMP/./.valgrindsh
 
 VALPORT=1500 # 监听的默认端口
 
-# 定义不同工具的参数
-typeset -A MEMCHECK_FLAGS=(
-    "--num-callers" "40"
-    "--track-origins" "yes"
-    "--read-inline-info" "yes"
-    "--leak-check" "full"
-    "--show-reachable" "yes"
-    "--leak-resolution" "high"
-    "--trace-children" "yes"
+#不同工具参数
+MEMCHECK_FLAGS=(
+    "--num-callers=40"
+    "--track-origins=yes"
+    "--read-inline-info=yes"
+    "--leak-check=full"
+    "--show-reachable=yes"
+    "--leak-resolution=high"
+    "--trace-children=yes"
 )
 
-typeset -A CALLGRIND_FLAGS=(
-    "--dump-instr" "yes"
-    "--collect-jumps" "yes"
-    "--trace-children" "yes"
+CALLGRIND_FLAGS=(
+    "--dump-instr=yes"      # 收集指令级别的信息--用于kcachegrind分析
+    "--collect-jumps=yes"   # 收集条件跳转信息--用于kcachegrind分析
+    "--trace-children=yes"
+    "--dsymutil=yes"
 )
 
 # 整合了高亮的valgrind
 valgrind_bat() {
-    # 检查当前shell是否为zsh==目前数组定义方式只能在zsh下使用
-    if [[ -z "$ZSH_VERSION" ]]; then
-        echo "Error: This script requires Zsh to run." >&2
-        exit 1
-    fi
     local stdout_tmp=$(mktemp)
     local stderr_tmp=$(mktemp)
     local combined_tmp=$(mktemp)
-    local merge=false
+    local exetype=false
     local VALFLAGS=()
 
     if [[ "$1" = "--merge" || "$1" = "-m" ]]; then
         shift
-        merge=true
+        exetype=merge
     elif [[ "$1" = "--server" ]]; then
         shift
-        valgrind --log-socket=$(getip):$VALPORT "${VALFLAGS[@]}" "$@"
-        return 0
+        exetype=server
     fi
 
     # 检测工具类型
@@ -105,16 +100,17 @@ valgrind_bat() {
     # 设置对应工具的参数
     case "$tool" in
         memcheck)
-            for key value in "${(@kv)MEMCHECK_FLAGS}"; do
-                VALFLAGS+=("$key=$value")
-            done
+            VALFLAGS=("${MEMCHECK_FLAGS[@]}")
             ;;
         callgrind)
-            for key value in "${(@kv)CALLGRIND_FLAGS}"; do
-                VALFLAGS+=("$key=$value")
-            done
+            VALFLAGS=("${CALLGRIND_FLAGS[@]}")
             ;;
     esac
+
+    if [ "$exetype" = "server" ]; then
+        valgrind --log-socket=$(getip):$VALPORT "${VALFLAGS[@]}" "$@"
+        return 0
+    fi
 
     # 执行valgrind命令并捕获输出
     { 
@@ -122,7 +118,7 @@ valgrind_bat() {
     } > >(cat -v > "$combined_tmp") 2>&1 | tee -a "$combined_tmp" > /dev/null
 
     # 根据终端情况输出结果
-    if [ -t 1 ] && [ -t 2 ] && [ "$merge" = "true" ]; then
+    if [ -t 1 ] && [ -t 2 ] && [ "$exetype" = "merge" ]; then
         cat "$combined_tmp" | bat --language=valgrind
     else
         if [ -t 1 ]; then
@@ -287,5 +283,7 @@ cat << 'EOF' >> $AFTERINSTALL
 # bat必要的更新缓存操作
 bat cache --build
 EOF
+
 return 0
+
 }
