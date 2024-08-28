@@ -101,6 +101,10 @@ if [[ $WSLTYPE == "WSL2" ]]; then
         echo "$ip_address"
     }
 fi
+
+# 强制让make满核心编译
+alias make='make -j$(nproc)'
+
 EOF
 
 # 专门用于处理jyy os 的AbstractMachine配置

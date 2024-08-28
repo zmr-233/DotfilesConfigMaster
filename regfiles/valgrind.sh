@@ -56,14 +56,15 @@ VALPORT=1500 # 监听的默认端口
 
 #不同工具参数
 MEMCHECK_FLAGS=(
-    "--num-callers=40"
-    "--track-origins=yes"
-    "--read-inline-info=yes"
-    "--leak-check=full"
-    "--show-reachable=yes"
-    "--leak-resolution=high"
-    "--trace-children=yes"
+    "--num-callers=40"                 # 增加调用栈的大小，可能会轻微增加内存使用和性能开销
+    "--track-origins=yes"              # 跟踪未初始化值的来源，显著增加性能开销
+    "--read-inline-info=yes"           # 使用内联函数的调试信息，可能增加启动时间
+    "--leak-check=full"                # 进行详细的内存泄漏检测，会在程序退出时增加性能开销
+    # "--show-reachable=yes"           # 显示所有仍然可达的内存块，增加程序结束时的分析时间（如果启用）
+    "--leak-resolution=high"           # 高分辨率检测内存泄漏，增加检测泄漏的时间和资源开销（如果启用）
+    "--trace-children=yes"             # 跟踪子进程，可能会轻微增加性能开销
 )
+
 
 CALLGRIND_FLAGS=(
     "--dump-instr=yes"      # 收集指令级别的信息--用于kcachegrind分析

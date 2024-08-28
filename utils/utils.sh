@@ -16,6 +16,7 @@ configCheck(){
         return 0
     fi
 }
+
 # 生成标注
 genSignS(){
     local name=$1
@@ -383,6 +384,7 @@ genUniName() {
 safeTarBackup() {
     local curDotFilesDir=$1
 
+
     # 检查CURDOTFILES是否非空且存在
     if [ -n "$curDotFilesDir" ] && [ -d "$curDotFilesDir" ]; then
         # 设置备份目录
@@ -513,3 +515,25 @@ countdown() {
     sleep 1
     echo ""
 }
+了解您的需求，这里提供一组更简短的命名方案：
+
+1. `cmdCheck` -> `checkCmd`
+2. `configCheck` -> `checkCfg`
+3. `saveMap` -> `saveMap`
+4. `saveArray` -> `saveArr`
+5. `readReturn` -> `askYn`
+6. `readBool` -> `askBool`
+7. `readLine` -> `askLine`
+8. `readArray` -> `askArr`
+9. `readNoSpace` -> `askWord`
+10. `readMultiLine` -> `askText`
+11. `toArray` -> `strToArr`
+12. `genUniName` -> `genName`
+13. `safeTAR` -> `tarSafe`
+14. `safeCP` -> `cpSafe`
+15. `safeMV` -> `mvSafe`
+16. `inArray` -> `inArr`
+17. `deleteFromArray` -> `delFromArr`
+18. `countdown` -> `countDown`
+
+这样的命名既简短又能够较好地传达函数的意图。

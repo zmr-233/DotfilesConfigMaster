@@ -100,6 +100,7 @@ genSignS ysyx_verilator $TEMP/./.ysyxrc
 cat << 'EOF' >> $TEMP/./.ysyxrc
 # 设置verilator根目录
 export VERILATOR_ROOT=$HOME/bin/verilator
+export VERILATOR_INCLUDE=$VERILATOR_ROOT/include
 export PATH="$PATH:$VERILATOR_ROOT/bin"
 
 EOF

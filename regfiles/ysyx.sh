@@ -56,6 +56,12 @@ export YSYX_HOME=$HOME/ysyx
 # verilator仿真环境
 export NPC_HOME=$YSYX_HOME/npc
 
+# nvboard环境
+export NVBOARD_HOME=$YSYX_HOME/nvboard
+
+# NEMUhuanjing 
+export NEMU_HOME=$YSYX_HOME/nemu
+
 # jyy os仿真环境
 # 专门用于处理jyy os 的AbstractMachine配置
 # 详情见https://jyywiki.cn/AbstractMachine/
