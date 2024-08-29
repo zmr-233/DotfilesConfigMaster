@@ -10,7 +10,7 @@ bat_deps(){
     echo "__predeps__ zsh zshplugins"
 }
 bat_check(){
-    cmdCheck "bat"
+    checkCmd "bat"
     return $?
 }
 

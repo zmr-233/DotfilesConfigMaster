@@ -10,7 +10,7 @@ zstree_deps(){
     echo "__predeps__"
 }
 zstree_check(){
-cmdCheck "zstree"
+checkCmd "zstree"
 return $?
 }
 

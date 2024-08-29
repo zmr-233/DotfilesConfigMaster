@@ -86,7 +86,7 @@ __info__install_select(){
     # [ "$DEB" = "y" ] && saveMap recordInstallMap
 
     # 配置
-    if cmdCheck "${sinName}_config";then
+    if checkCmd "${sinName}_config";then
         cinfo "......自动生成配置 $sinName......"
         if inArray recordConfig $sinName; then
             cinfo "==> 检测到已在配置列表recordConfig"

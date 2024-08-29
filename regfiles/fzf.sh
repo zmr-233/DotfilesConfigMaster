@@ -10,7 +10,7 @@ fzf_deps(){
     echo "__predeps__ zsg bat rg fd"
 }
 fzf_check(){
-cmdCheck "fzf"
+checkCmd "fzf"
 return $?
 }
 

@@ -10,7 +10,7 @@ rg_deps(){
     echo "__predeps__ zsh zshplugins"
 }
 rg_check(){
-    cmdCheck "rg"
+    checkCmd "rg"
     return $?
 }
 

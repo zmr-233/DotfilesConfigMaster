@@ -11,7 +11,7 @@ miniconda_deps(){
 }
 
 miniconda_check(){
-    cmdCheck "conda"
+    checkCmd "conda"
 return $?
 
     return 1

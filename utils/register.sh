@@ -5,7 +5,7 @@ check_preCmd(){
     # declare -n preCmd_=$1
     declare -a uncCmd=()
     for cmd in "${preCmd_[@]}"; do
-        if !cmdCheck $cmd; then
+        if !checkCmd $cmd; then
             cerror "未找到命令: $cmd"
             uncCmd+=($cmd)
         fi

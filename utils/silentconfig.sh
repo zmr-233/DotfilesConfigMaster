@@ -4,10 +4,10 @@ __silent__install_config_all(){
     declare -g -a recordConfig=() # 存储所有config文件
     # 强制静默所有文件
     for reg in "${regFiles[@]}"; do
-        if cmdCheck "${reg}_install"; then
+        if checkCmd "${reg}_install"; then
             recordInstall+=("$reg")
         fi
-        if cmdCheck "${reg}_config"; then
+        if checkCmd "${reg}_config"; then
             recordConfig+=("$reg")
         fi
     done

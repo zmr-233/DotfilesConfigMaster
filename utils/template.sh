@@ -45,14 +45,14 @@ gen_check(){
     if readReturn "是否能用type命令检测"; then
 cat << EOF >>$TEMP/$1.sh
 ${1}_check(){
-cmdCheck "$1"
+checkCmd "$1"
 return \$?
 }
 
 EOF
     else
-        cnote "如果是纯配置文件，使用configCheck "\$HOME/proxyrc";return \$?;即可"
-        cnote "如果能在终端输入明确指令，检测函数cmdCheck "$1"; return \$?;可供使用"
+        cnote "如果是纯配置文件，使用checkCfg "\$HOME/proxyrc";return \$?;即可"
+        cnote "如果能在终端输入明确指令，检测函数checkCmd "$1"; return \$?;可供使用"
         cnote "不要用~/.proxyrc，必须要用\$HOME环境变量"
         # cnote "如果是纯配置文件(无需检查是否安装)，可以保持空白ctrl-d直接跳过"
         readMultiLine checkWay "请输入检测是否安装的bash命令，默认以return 0代表已安装"

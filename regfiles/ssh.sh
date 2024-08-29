@@ -10,7 +10,7 @@ ssh_deps(){
     echo "__predeps__ zsh"
 }
 ssh_check(){
-cmdCheck "ssh"
+checkCmd "ssh"
 return $?
 }
 

@@ -11,7 +11,7 @@ ysyx_gtkwave_deps(){
 }
 
 ysyx_gtkwave_check(){
-cmdCheck gtkwave;
+checkCmd gtkwave;
 return $?
 
 return 1

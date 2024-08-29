@@ -11,7 +11,7 @@ __predeps___deps(){
 }
 
 __predeps___check(){
-cmdCheck stow
+checkCmd stow
 return $?
 
     return 1

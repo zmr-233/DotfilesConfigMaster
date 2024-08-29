@@ -10,7 +10,7 @@ strace_deps(){
     echo "__predeps__"
 }
 strace_check(){
-cmdCheck "strace"
+checkCmd "strace"
 return $?
 }
 

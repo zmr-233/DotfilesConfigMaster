@@ -11,7 +11,7 @@ ysyx_z3_deps(){
 }
 
 ysyx_z3_check(){
-cmdCheck z3
+checkCmd z3
 return $?
 
 return 1

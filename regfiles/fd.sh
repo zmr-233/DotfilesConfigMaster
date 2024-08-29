@@ -10,7 +10,7 @@ fd_deps(){
     echo "__predeps__ zsh zshplugins"
 }
 fd_check(){
-cmdCheck "fd"
+checkCmd "fd"
 return $?
 }
 

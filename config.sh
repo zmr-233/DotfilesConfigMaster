@@ -40,7 +40,7 @@ for script in $REGP/*.sh; do
     source "\$script"
 done
 
-ISCONFIG=y # Bug:用于configCheck的判断困难问题
+ISCONFIG=y # Bug:用于checkCfg的判断困难问题
 EOF
 
 # 全局变量

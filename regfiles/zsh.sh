@@ -10,7 +10,7 @@ zsh_deps(){
     echo "__predeps__"
 }
 zsh_check(){
-    cmdCheck "zsh"
+    checkCmd "zsh"
     return $?
 }
 
@@ -114,9 +114,16 @@ cat << 'EOF' >> $TEMP/./.zshrc
 # 专门用于处理jyy os 的AbstractMachine配置
 # 详情见https://jyywiki.cn/AbstractMachine/
 # export AM_HOME="$HOME/1_GitProject/1_jyyos/l0_am/abstract-machine"
+
 EOF
 else
     cwarn "没有找到jyy os的AbstractMachine配置, 跳过..."
 fi
+
+# DotfilesConfigMaster的目录所在
+cat << EOF >> $TEMP/./.zshrc
+# DotfilesConfigMaster目录所在
+export DOTFILES_CONFIG_MASTER_HOME="$OPWD"
+EOF
 return 0
 }

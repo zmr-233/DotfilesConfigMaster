@@ -10,7 +10,7 @@ git_deps(){
     echo "__predeps__"
 }
 git_check(){
-cmdCheck "git"
+checkCmd "git"
 return $?
 }
 

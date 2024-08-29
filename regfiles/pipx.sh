@@ -10,7 +10,7 @@ pipx_deps(){
     echo "__predeps__ zsh zshplugins"
 }
 pipx_check(){
-    cmdCheck "pipx"
+    checkCmd "pipx"
     return $?
 }
 

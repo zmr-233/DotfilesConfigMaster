@@ -1,13 +1,13 @@
 #!/usr/bin/bash
 
 # 命令检查
-cmdCheck(){ type $1 > /dev/null 2>&1; }
+checkCmd(){ type $1 > /dev/null 2>&1; }
 
 # 纯配置检查
-configCheck(){
+# ISCONFIG="" # 用来判断是否需要跳过配置检查
+checkCfg(){
     if [[ -z $ISCONFIG ]];then
-        
-        if [[ -e "$1" ]];then
+        if [[ -e "$1" ]] || [[ -d "$1" ]] ;then
             return 0
         else
             return 1
@@ -16,6 +16,7 @@ configCheck(){
         return 0
     fi
 }
+
 
 # 生成标注
 genSignS(){
@@ -214,10 +215,7 @@ add_configMap(){
             mkdir -p $TEMP/$key
             for file in ${config_map_[$key]}; do
                 declare -n key_map="__${skey}__map"
-cat <<EOF > $TEMP/$key/$file
-#!/bin/bash
-
-EOF
+                echo -n > $TEMP/$key/$file # 原先是写入shellbang行
                 key_map[$file]=1
             done
         else
@@ -225,10 +223,7 @@ EOF
                 declare -n key_map="__${skey}__map"
                 if [[ -z "${key_map[$file]}" ]]; then
                     allConfigMap[$key]+=" $file"
-cat <<EOF > $TEMP/$key/$file
-#!/bin/bash
-
-EOF
+                    echo -n > $TEMP/$key/$file # 原先是写入shellbang行
                     key_map[$file]=1
                 fi
             done
@@ -515,25 +510,3 @@ countdown() {
     sleep 1
     echo ""
 }
-了解您的需求，这里提供一组更简短的命名方案：
-
-1. `cmdCheck` -> `checkCmd`
-2. `configCheck` -> `checkCfg`
-3. `saveMap` -> `saveMap`
-4. `saveArray` -> `saveArr`
-5. `readReturn` -> `askYn`
-6. `readBool` -> `askBool`
-7. `readLine` -> `askLine`
-8. `readArray` -> `askArr`
-9. `readNoSpace` -> `askWord`
-10. `readMultiLine` -> `askText`
-11. `toArray` -> `strToArr`
-12. `genUniName` -> `genName`
-13. `safeTAR` -> `tarSafe`
-14. `safeCP` -> `cpSafe`
-15. `safeMV` -> `mvSafe`
-16. `inArray` -> `inArr`
-17. `deleteFromArray` -> `delFromArr`
-18. `countdown` -> `countDown`
-
-这样的命名既简短又能够较好地传达函数的意图。

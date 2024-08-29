@@ -10,7 +10,7 @@ autojump_deps(){
     echo "__predeps__ zsh zshplugins"
 }
 autojump_check(){
-cmdCheck "autojump"
+checkCmd "autojump"
 return $?
 }
 

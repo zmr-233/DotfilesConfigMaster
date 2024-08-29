@@ -10,7 +10,7 @@ tmux_deps(){
     echo "__predeps__"
 }
 tmux_check(){
-cmdCheck "tmux"
+checkCmd "tmux"
 return $?
 }
 

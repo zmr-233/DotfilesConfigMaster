@@ -11,7 +11,7 @@ proxy_deps(){
 }
 
 proxy_check(){
-configCheck "$HOME/.proxyrc"
+checkCfg "$HOME/.proxyrc"
 return $?
 
 return 1

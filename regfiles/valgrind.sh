@@ -10,7 +10,7 @@ valgrind_deps(){
     echo "__predeps__ bat"
 }
 valgrind_check(){
-cmdCheck "valgrind"
+checkCmd "valgrind"
 return $?
 }
 

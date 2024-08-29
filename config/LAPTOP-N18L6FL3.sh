@@ -10,6 +10,7 @@ declare -g -a recordInstall=(
 "proxy" 
 "ssh" 
 "zshplugins" 
+"libbash" 
 "autojump" 
 "bat" 
 "fd" 
@@ -47,5 +48,6 @@ declare -g -a recordConfig=(
 "ysyx_gtkwave" 
 "ysyx_z3" 
 "ysyx_verilator" 
+"libbash" 
 )
 

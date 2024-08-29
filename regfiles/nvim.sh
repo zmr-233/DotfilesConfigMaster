@@ -10,7 +10,7 @@ nvim_deps(){
     echo "__predeps__"
 }
 nvim_check(){
-cmdCheck "nvim"
+checkCmd "nvim"
 return $?
 }
 

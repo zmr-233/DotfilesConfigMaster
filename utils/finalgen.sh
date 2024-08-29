@@ -94,8 +94,10 @@ if [[ $stillInstall -eq 1 ]]; then
     cd $CURDOTFILES
     # 使用了一个高级技巧 https://www.reddit.com/r/linux4noobs/comments/b5ig2h/is_there_any_way_to_force_gnu_stow_to_overwrite/
     # 用来强制覆盖现有文件
-    [ "$IFTEST" = "n" ] && stow --adopt -R -t ~ . && cinfo "> stow --adopt -R -t ~ ."
-    [ "$IFTEST" = "y" ] && cdebug "此处注释了stow 仅供调试使用 stow --adopt -R -t ~ ."
+    # https://www.reddit.com/r/linuxquestions/comments/x5uvc5/stow_only_create_symlinks_to_files_not_directories/
+    # 令人困惑的为整个文件夹创建符号链接问题 --no-folding
+    [ "$IFTEST" = "n" ] && stow --adopt --no-folding -R -t ~ . && cinfo "> stow --adopt --no-folding -R -t ~ ."
+    [ "$IFTEST" = "y" ] && cdebug "此处注释了stow 仅供调试使用 stow --adopt --no-folding -R -t ~ ."
     cd $OPWD
     minfo "......合并生成$(hostname).sh......"
     echo "#/bin/bash" > $CONFIGP/$(hostname).sh
@@ -106,6 +108,9 @@ if [[ $stillInstall -eq 1 ]]; then
     [ -f "$OPWD/installafter.sh" ] && $OPWD/installafter.sh
     csuccess "......ALL_DONE......"
 fi
+
+cinfo "......删除临时文件......"
+rm -rf $OPWD/temp
 # ===============================================
 EOF
 
@@ -124,6 +129,8 @@ EOF
 
 # 生成卸载脚本
 finalgen_uninstallsh(){
+    minfo "暂时不能使用finalgen_uninstallsh"
+    exit 1
     minfo "......最终合并生成uninstall.sh......"
     local fileName=$UNINSTALL
 
@@ -215,6 +222,8 @@ EOF
 }
 
 finalgen_updatesh(){
+    minfo "暂时不能使用finalgen_updatesh"
+    exit 1
     minfo "......最终合并生成update.sh......"
     local fileName=$UPDATE
 
