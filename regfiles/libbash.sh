@@ -18,8 +18,8 @@ libbash_check(){
 libbash_install(){
 genSignS "libbash" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装libbash......"
-cinfo "libbash是无需安装的bash函数库"
+MODULE_INFO "......正在安装libbash......"
+INFO "libbash是无需安装的bash函数库"
 EOF
 genSignE "libbash" $INSTALL
 }
@@ -46,9 +46,13 @@ genSignE proxy $TEMP/./.zshrc
 cat << 'PPAP' >> $TEMP/libbash/libbash.sh
 #!/bin/bash
 
-libfiles=()
 
-# LIBBASH_HOME=$HOME/libbash
+# 注意: 该变量是DotfilesConfigMaster的环境变量，但没有很好的办法，这里使用硬编码
+DOTFILES_CONFIG_MASTER_HOME=$HOME/DotfilesConfigMaster
+
+# LIBBASH_HOME=$HOME/libbash # 用于存储libbash目录的路径
+
+libfiles=() # 用于存储libbash目录下的所有文件名
 
 # 检查环境变量LIBBASH_HOME是否已设置并且目录是否存在
 if [ -z "$LIBBASH_HOME" ] || [ ! -d "$LIBBASH_HOME" ]; then
@@ -74,7 +78,6 @@ done
 # for filename in "${libfiles[@]}"; do
 #     DEBUG "$filename"
 # done
-DOTFILES_CONFIG_MASTER_HOME=$HOME/DotfilesConfigMaster
 __generate_libbash_regfile() {
     if [ -z "$DOTFILES_CONFIG_MASTER_HOME" ]; then
         ERROR "DOTFILES_CONFIG_MASTER_HOME is not set"
@@ -102,8 +105,8 @@ libbash_check(){
 libbash_install(){
 genSignS "libbash" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装libbash......"
-cinfo "libbash是无需安装的bash函数库"
+MODULE_INFO "......正在安装libbash......"
+INFO "libbash是无需安装的bash函数库"
 EOF
 genSignE "libbash" $INSTALL
 }

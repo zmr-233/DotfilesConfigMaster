@@ -18,9 +18,9 @@ pipx_check(){
 pipx_install(){
 genSignS "pipx" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装pipx......"
+MODULE_INFO "......正在安装pipx......"
 if pipx_check; then
-    cwarn "pipx已经安装，不再执行安装操作"
+    WARN "pipx已经安装，不再执行安装操作"
 else
 sudo apt install pipx -y
 

@@ -20,9 +20,9 @@ return $?
 miniconda_install(){
 genSignS "miniconda" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装miniconda......"
+MODULE_INFO "......正在安装miniconda......"
 if miniconda_check; then
-    cwarn "miniconda已经安装，不再执行安装操作"
+    WARN "miniconda已经安装，不再执行安装操作"
 else
 mkdir -p ~/miniconda3
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
@@ -66,7 +66,7 @@ miniconda_uninstall(){
 genSignS "miniconda" $UNINSTALL
 cat << 'EOF' >> $UNINSTALL
 
-minfo "......正在卸载miniconda......"
+MODULE_INFO "......正在卸载miniconda......"
 if miniconda_check; then
 conda activate
 conda init --reverse --all
@@ -74,7 +74,7 @@ rm -rf ~/miniconda3
 sudo rm -rf /opt/miniconda3
 
 else
-    cwarn "miniconda已经卸载，不再执行卸载操作"
+    WARN "miniconda已经卸载，不再执行卸载操作"
 fi
 EOF
 genSignE "miniconda" $UNINSTALL

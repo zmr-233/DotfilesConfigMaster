@@ -18,9 +18,9 @@ return $?
 valgrind_install(){
 genSignS "valgrind" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装valgrind......"
+MODULE_INFO "......正在安装valgrind......"
 if valgrind_check; then
-    cwarn "valgrind已经安装，不再执行安装操作"
+    WARN "valgrind已经安装，不再执行安装操作"
 else
 sudo apt install valgrind kcachegrind -y
 

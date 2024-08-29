@@ -20,9 +20,9 @@ return $?
 __predeps___install(){
 genSignS "__predeps__" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装__predeps__......"
+MODULE_INFO "......正在安装__predeps__......"
 if __predeps___check; then
-    cwarn "__predeps__已经安装，不再执行安装操作"
+    WARN "__predeps__已经安装，不再执行安装操作"
 else
 sudo apt install build-essential gdb -y
 sudo apt-get install stow -y
@@ -43,7 +43,7 @@ if [[ $(lsb_release -is) = "Ubuntu" ]]; then
         "22.04")
 cat << 'EOF' >> $INSTALL
 
-minfo "......更换清华源......"
+MODULE_INFO "......更换清华源......"
 sudo tee /etc/apt/sources.list > /dev/null << 'EL'
 # 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse
@@ -66,7 +66,7 @@ EOF
         "24.04")
 cat << 'EOF' >> $INSTALL
 
-minfo "......更换清华源......"
+MODULE_INFO "......更换清华源......"
 sudo tee /etc/apt/sources.list.d/ubuntu.sources > /dev/null << 'EL'
 Types: deb
 URIs: https://mirrors.tuna.tsinghua.edu.cn/ubuntu
@@ -111,22 +111,22 @@ EL
 EOF
             ;;
         *)
-cerror "未知的 Ubuntu 版本，请手动操作"
+ERROR "未知的 Ubuntu 版本，请手动操作"
 cat << 'EOF' >> $INSTALL
 
-minfo "......更换清华源......"
+MODULE_INFO "......更换清华源......"
 cwran "未知的 Ubuntu 版本，请手动操作"
-cnote "https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/"
+NOTE "https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/"
 EOF
             ;;
     esac
 else
-    cerror "请手动操作"
+    ERROR "请手动操作"
 cat << 'EOF' >> $INSTALL
 
-minfo "......更换清华源......"
+MODULE_INFO "......更换清华源......"
 cwran "请手动操作"
-cnote "https://mirrors.tuna.tsinghua.edu.cn/help/"
+NOTE "https://mirrors.tuna.tsinghua.edu.cn/help/"
 EOF
     return 1
 fi

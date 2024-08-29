@@ -237,7 +237,7 @@ readReturn(){
     local input
 
     while true; do
-        cinput "$prompt [y/n] default: y"
+        INPUT "$prompt [y/n] default: y"
         read -r input
 
         if [ -z "$input" ]; then
@@ -255,7 +255,7 @@ readReturn(){
                 break
                 ;;
             *)
-                cwarn "请输入 yes 或 no"
+                WARN "请输入 yes 或 no"
                 ;;
         esac
     done
@@ -269,7 +269,7 @@ readBool() {
     local input
 
     while true; do
-        cinput "$prompt [y/n] default: y"
+        INPUT "$prompt [y/n] default: y"
         read -r input
 
         if [ -z "$input" ]; then
@@ -287,7 +287,7 @@ readBool() {
                 break
                 ;;
             *)
-                cwarn "请输入 yes 或 no"
+                WARN "请输入 yes 或 no"
                 ;;
         esac
     done
@@ -299,7 +299,7 @@ readLine() {
     local prompt=$2
     local input
 
-    cinput "LINE= $prompt"
+    INPUT "LINE= $prompt"
     read -r input
 
     # 使用 eval
@@ -315,7 +315,7 @@ readArray() {
     local input
 
     # 使用提供的提示信息来读取输入
-    cinput "ARRAY= $prompt_message"
+    INPUT "ARRAY= $prompt_message"
     read -r input
 
     # 将输入分割成数组并赋值给指定的变量
@@ -329,12 +329,12 @@ readNoSpace() {
     local input
 
     while true; do
-        cinput "NO_SPACE= $prompt"
+        INPUT "NO_SPACE= $prompt"
         read -r input
 
         # 检查输入是否包含空格或特殊字符
         if [[ "$input" =~ [[:space:][:punct:]] ]]; then
-            cwarn "输入不能包含空格或特殊字符，请重新输入。"
+            WARN "输入不能包含空格或特殊字符，请重新输入。"
         else
             break
         fi
@@ -350,7 +350,7 @@ readMultiLine() {
     local prompt=$2
     local result=""
 
-    cinput "<Ctrl-D>= $prompt"
+    INPUT "<Ctrl-D>= $prompt"
 
     while IFS= read -r line; do
         result="${result}${line}"$'\n'
@@ -415,7 +415,7 @@ safeBackup() {
         # 生成备份文件名
         local backupName="$(date +%Y%m%d%H%M).${fileName}.bak"
         cp "$targetDir/$fileName" "$historyDir/$backupName"
-        cwarn "Target file exists. Backup created as $historyDir/$backupName"
+        WARN "Target file exists. Backup created as $historyDir/$backupName"
     fi
 }
 
@@ -435,7 +435,7 @@ safeOverwrite() {
     
     # 检查源文件是否存在
     if [ ! -f "$sourceDir/$fileName" ]; then
-        cerror "Source file $sourceDir/$fileName does not exist."
+        ERROR "Source file $sourceDir/$fileName does not exist."
         return 1
     fi
     
@@ -444,7 +444,7 @@ safeOverwrite() {
     
     # 移动文件到目标目录
     mv "$sourceDir/$fileName" "$targetDir/$fileName"
-    cinfo "File has been overwritten at $targetDir/$fileName"
+    INFO "File has been overwritten at $targetDir/$fileName"
 }
 
 
@@ -500,13 +500,13 @@ deleteFromArray() {
 # 定义倒计时函数
 countdown() {
     local tn=$1
-    cline "YELLOW" "... "
+    nECHO "YELLOW" "... "
     while [ $tn -ge 1 ]; do
-        cline "YELLOW" "${tn} "
+        nECHO "YELLOW" "${tn} "
         sleep 1
         ((tn--))
     done
-    cline "YELLOW" "0 ..."
+    nECHO "YELLOW" "0 ..."
     sleep 1
     echo ""
 }

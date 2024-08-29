@@ -18,9 +18,9 @@ return $?
 fd_install(){
 genSignS "fd" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装fd......"
+MODULE_INFO "......正在安装fd......"
 if fd_check; then
-    cwarn "fd已经安装，不再执行安装操作"
+    WARN "fd已经安装，不再执行安装操作"
 else
 sudo apt install fd-find
 # 由于包名冲突，需要创建符号链接

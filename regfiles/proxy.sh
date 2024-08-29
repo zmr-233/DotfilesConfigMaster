@@ -20,8 +20,8 @@ return 1
 proxy_install(){
 genSignS "proxy" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装proxy......"
-cinfo "proxy是无需安装的配置文件"
+MODULE_INFO "......正在安装proxy......"
+INFO "proxy是无需安装的配置文件"
 EOF
 genSignE "proxy" $INSTALL
 }

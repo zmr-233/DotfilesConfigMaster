@@ -13,51 +13,51 @@ fi
 
 #====   Colorized functions  ====
 
-cecho() {
+ECHO() {
   echo -e "${!1}${2}${RESET}"
 }
 
-cline() {
+nECHO() {
   echo -n -e "${!1}${2}${RESET}"
 }
 
-cinfo() {
+INFO() {
   echo -e "${GREEN_BOLD}INFO: ${1}${RESET}"
 }
 
-cwarn() {
+WARN() {
   echo -e "${YELLOW_BOLD}WARNING: ${1}${RESET}"
 }
 
-cerror() {
+ERROR() {
   echo -e "${RED_BOLD}ERROR: ${1}${RESET}"
 }
 
-csuccess() {
+SUCCESS() {
   echo -e "${GREEN_BOLD}SUCCESS: ${1}${RESET}"
 }
 
-cnote() {
+NOTE() {
   echo -e "${BLUE_BOLD}NOTE: ${1}${RESET}"
 }
 
-cinput() {
+INPUT() {
   echo -e "${CYAN_BOLD}==INPUT==${1}${RESET}"
 }
 
-cabort(){
+ABORT(){
     echo -e "${RED_BOLD}ABORT: ${1}${RESET}"
 }
 
-cdebug(){
+DEBUG(){
     echo -e "${YELLOW}DEBUG: ${1}${RESET}"
 }
 
 # Module and function specific functions
-minfo() {
+MODULE_INFO() {
   echo -e "${CYAN_BOLD}MODULE: ${1}${RESET}"
 }
 
-finfo() {
+FUN_INFO() {
   echo -e "${BLUE_BOLD}FUNC: ${1}${RESET}"
 }

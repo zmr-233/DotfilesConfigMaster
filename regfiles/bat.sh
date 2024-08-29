@@ -18,9 +18,9 @@ bat_check(){
 bat_install(){
 genSignS "bat" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装bat......"
+MODULE_INFO "......正在安装bat......"
 if bat_check; then
-    cwarn "bat已经安装，不再执行安装操作"
+    WARN "bat已经安装，不再执行安装操作"
 else
 sudo apt install bat -y # 由于命名冲突，默认是batcat,必须要设置一个符号别名
 mkdir -p ~/.local/bin

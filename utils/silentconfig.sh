@@ -17,7 +17,7 @@ __silent__install_config_all(){
 
 __silent__config_hostname_all(){
     if [[ ${#recordConfig[@]} -eq 0 ]]; then
-        cerror "recordConfig为空--请检查\$hostname.sh文件是否被正确读取"
+        ERROR "recordConfig为空--请检查\$hostname.sh文件是否被正确读取"
         return
     fi
     __info__config 

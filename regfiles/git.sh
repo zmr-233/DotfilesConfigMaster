@@ -18,9 +18,9 @@ return $?
 git_install(){
 genSignS "git" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装git......"
+MODULE_INFO "......正在安装git......"
 if git_check; then
-    cwarn "git已经安装，不再执行安装操作"
+    WARN "git已经安装，不再执行安装操作"
 else
 sudo apt install git -y
 

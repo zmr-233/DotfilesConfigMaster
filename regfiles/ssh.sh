@@ -18,9 +18,9 @@ return $?
 ssh_install(){
 genSignS "ssh" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装ssh......"
+MODULE_INFO "......正在安装ssh......"
 if ssh_check; then
-    cwarn "ssh已经安装，不再执行安装操作"
+    WARN "ssh已经安装，不再执行安装操作"
 else
 sudo apt-get install openssh-server -y # 下载ssh服务
 sudo systemctl restart ssh # 启动ssh服务
@@ -56,11 +56,11 @@ return 0
 ssh_githubssh(){
 cat << 'EOF' >> $INSTALL
 
-minfo "......为github生成ssh密钥对......"
-cnote "路径/home//.ssh/main_rsa"
+MODULE_INFO "......为github生成ssh密钥对......"
+NOTE "路径/home//.ssh/main_rsa"
 ssh-keygen -t rsa #生成密钥对
 ssh-add ~/.ssh/main_rsa # 添加私钥到ssh代理
-cnote "或者复制到服务器 ssh-copy-id，这里直接打印出公钥"
+NOTE "或者复制到服务器 ssh-copy-id，这里直接打印出公钥"
 cat ~/.ssh/main_rsa.pub # 打印公钥
 EOF
 }

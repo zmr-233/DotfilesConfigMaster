@@ -18,9 +18,9 @@ return $?
 zstree_install(){
 genSignS "zstree" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装zstree......"
+MODULE_INFO "......正在安装zstree......"
 if zstree_check; then
-    cwarn "zstree已经安装，不再执行安装操作"
+    WARN "zstree已经安装，不再执行安装操作"
 else
 git clone https://github.com/zmr-233/zstree.git ~/bin/zstree
 cd ~/bin/zstree && make all
@@ -52,7 +52,7 @@ zstree_update(){
 genSignS "zstree" $UPDATE
 cat << 'EOF' >> $UPDATE
 
-minfo "......正在升级zstree......"
+MODULE_INFO "......正在升级zstree......"
 cd ~/bin/zstree && git pull
 make all
 

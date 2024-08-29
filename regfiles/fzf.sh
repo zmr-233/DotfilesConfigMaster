@@ -18,9 +18,9 @@ return $?
 fzf_install(){
 genSignS "fzf" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装fzf......"
+MODULE_INFO "......正在安装fzf......"
 if fzf_check; then
-    cwarn "fzf已经安装，不再执行安装操作"
+    WARN "fzf已经安装，不再执行安装操作"
 else
 # https://github.com/junegunn/fzf
 # sudo apt install fzf -y # 版本过低

@@ -2,7 +2,7 @@
 
 # 生成安装脚本
 finalgen_installsh(){
-    minfo "......最终合并生成install.sh......"
+    MODULE_INFO "......最终合并生成install.sh......"
     local fileName=$INSTALL
 
     # 备份allConfigMap
@@ -38,12 +38,12 @@ EOF
 
 cat << 'EOF' >> $fileName
 declare -i ifER=0
-minfo "检测安装状态"
+MODULE_INFO "检测安装状态"
 for file in "${recordInstall[@]}"; do
     if ${file}_check; then
-        cinfo "==> $file : [y]"
+        INFO "==> $file : [y]"
     else
-        cerror "==> $file : [n]"
+        ERROR "==> $file : [n]"
         ifER=$((ifER+1))
     fi
 done
@@ -52,19 +52,19 @@ declare -i stillInstall=0
 if [[ $ifER -eq 0 ]]; then
     stillInstall=1
 else
-    cerror "安装失败 未安装个数${ifER}"
+    ERROR "安装失败 未安装个数${ifER}"
     if readReturn "是否强制继续安装？[y/n]";then
         stillInstall=1
     else
-        cabort "安装失败,退出"
+        ABORT "安装失败,退出"
         exit 1
     fi
 fi
 
 if [[ $stillInstall -eq 1 ]]; then
-    csuccess "安装成功，准备更新配置文件"
-    [ "$IFTEST" = "y" ] && cdebug "此处注释了cp 仅供调试使用"
-    [ "$IFTEST" = "n" ] && rm -rf ./CURDOTFILES/* && cinfo "rm -rf ./CURDOTFILES/*"
+    SUCCESS "安装成功，准备更新配置文件"
+    [ "$IFTEST" = "y" ] && DEBUG "此处注释了cp 仅供调试使用"
+    [ "$IFTEST" = "n" ] && rm -rf ./CURDOTFILES/* && INFO "rm -rf ./CURDOTFILES/*"
     for key in "${!allConfigMap[@]}"; do
         mkdir -p "$CURDOTFILES/$key"
         # 将字符串转换为数组
@@ -73,43 +73,43 @@ if [[ $stillInstall -eq 1 ]]; then
             if [ "$IFTEST" = "n" ]; then
                 cp "$TEMP/$key/$file" "$CURDOTFILES/$key/$file"
                 if [ $? -eq 0 ]; then
-                    cinfo "==> $key/$file : [y]" # cinfo "cp $TEMP/$key/$file $CURDOTFILES/$key/$file"
+                    INFO "==> $key/$file : [y]" # INFO "cp $TEMP/$key/$file $CURDOTFILES/$key/$file"
                 else
-                    cerror "==> $key/$file : [n] Failed to copy $TEMP/$key/$file to $CURDOTFILES/$key/$file"
+                    ERROR "==> $key/$file : [n] Failed to copy $TEMP/$key/$file to $CURDOTFILES/$key/$file"
                 fi
             elif [ "$IFTEST" = "y" ]; then
-                cdebug "cp $TEMP/$key/$file $CURDOTFILES/$key/$file"
+                DEBUG "cp $TEMP/$key/$file $CURDOTFILES/$key/$file"
             fi
             if [ -f "$HOME/$key/$file" ] && [ ! -L "$HOME/$key/$file" ]; then
                 if readReturn "文件$HOME/$key/$file已存在，是否备份后删除？[y/n]"; then
                     safeBackup "$HOME/$key/$file" "$CURDOTFILES" "$key"
                     rm "$HOME/$key/$file"
                 else
-                    cwarn "文件$HOME/$key/$file未删除"
+                    WARN "文件$HOME/$key/$file未删除"
                 fi
             fi
         done
     done
-    minfo "......配置文件创建符号链接......"
+    MODULE_INFO "......配置文件创建符号链接......"
     cd $CURDOTFILES
     # 使用了一个高级技巧 https://www.reddit.com/r/linux4noobs/comments/b5ig2h/is_there_any_way_to_force_gnu_stow_to_overwrite/
     # 用来强制覆盖现有文件
     # https://www.reddit.com/r/linuxquestions/comments/x5uvc5/stow_only_create_symlinks_to_files_not_directories/
     # 令人困惑的为整个文件夹创建符号链接问题 --no-folding
-    [ "$IFTEST" = "n" ] && stow --adopt --no-folding -R -t ~ . && cinfo "> stow --adopt --no-folding -R -t ~ ."
-    [ "$IFTEST" = "y" ] && cdebug "此处注释了stow 仅供调试使用 stow --adopt --no-folding -R -t ~ ."
+    [ "$IFTEST" = "n" ] && stow --adopt --override --no-folding -R -t ~ . && INFO "> stow --adopt --override --no-folding -R -t ~ ."
+    [ "$IFTEST" = "y" ] && DEBUG "此处注释了stow 仅供调试使用 stow --adopt --override --no-folding -R -t ~ ."
     cd $OPWD
-    minfo "......合并生成$(hostname).sh......"
+    MODULE_INFO "......合并生成$(hostname).sh......"
     echo "#/bin/bash" > $CONFIGP/$(hostname).sh
     saveArray recordInstall $CONFIGP/$(hostname).sh "-g"
     saveArray recordConfig $CONFIGP/$(hostname).sh "-g"
-    minfo "......处理installafter.sh....."
-    minfo "$OPWD"
+    MODULE_INFO "......处理installafter.sh....."
+    MODULE_INFO "$OPWD"
     [ -f "$OPWD/installafter.sh" ] && $OPWD/installafter.sh
-    csuccess "......ALL_DONE......"
+    SUCCESS "......ALL_DONE......"
 fi
 
-cinfo "......删除临时文件......"
+INFO "......删除临时文件......"
 rm -rf $OPWD/temp
 # ===============================================
 EOF
@@ -129,9 +129,9 @@ EOF
 
 # 生成卸载脚本
 finalgen_uninstallsh(){
-    minfo "暂时不能使用finalgen_uninstallsh"
+    MODULE_INFO "暂时不能使用finalgen_uninstallsh"
     exit 1
-    minfo "......最终合并生成uninstall.sh......"
+    MODULE_INFO "......最终合并生成uninstall.sh......"
     local fileName=$UNINSTALL
 
     # 备份allConfigMap
@@ -166,20 +166,20 @@ EOF
 
 cat << 'EOF' >> $fileName
 declare -i ifER=0
-minfo "检测卸载状态"
+MODULE_INFO "检测卸载状态"
 for file in "${recordInstall[@]}"; do
     if ! ${file}_check; then
-        cinfo "==> $file : [y]"
+        INFO "==> $file : [y]"
     else
-        cerror "==> $file : [n]"
+        ERROR "==> $file : [n]"
         ifER=$((ifER+1))
     fi
 done
 
 if [[ $ifER -eq 0 ]]; then
-    csuccess "开始卸载配置文件"
-    [ "$IFTEST" = "y" ] && cdebug "此处注释了rm 仅供调试使用"
-    [ "$IFTEST" = "n" ] && rm -rf ./CURDOTFILES/* && cinfo "rm -rf ./CURDOTFILES/*"
+    SUCCESS "开始卸载配置文件"
+    [ "$IFTEST" = "y" ] && DEBUG "此处注释了rm 仅供调试使用"
+    [ "$IFTEST" = "n" ] && rm -rf ./CURDOTFILES/* && INFO "rm -rf ./CURDOTFILES/*"
     for key in "${!allConfigMap[@]}"; do
         # 将字符串转换为数组
         eval "files=(${allConfigMap[$key]})"
@@ -187,28 +187,28 @@ if [[ $ifER -eq 0 ]]; then
             if [ "$IFTEST" = "n" ]; then
                 rm -f "$CURDOTFILES/$key/$file"
                 if [ $? -eq 0 ]; then
-                    cinfo "==> $key/$file : [y]"  # cinfo "rm -f $CURDOTFILES/$key/$file"
+                    INFO "==> $key/$file : [y]"  # INFO "rm -f $CURDOTFILES/$key/$file"
                 else
-                    cerror "==> $key/$file : [n]  Failed to delete $CURDOTFILES/$key/$file"
+                    ERROR "==> $key/$file : [n]  Failed to delete $CURDOTFILES/$key/$file"
                 fi
             elif [ "$IFTEST" = "y" ]; then
-                cdebug "rm -f $CURDOTFILES/$key/$file"
+                DEBUG "rm -f $CURDOTFILES/$key/$file"
             fi
         done
     done
     cd $CURDOTFILES
-    minfo "......删除符号链接......"
+    MODULE_INFO "......删除符号链接......"
     # [ "$IFTEST" = "n" ] && stow -D -t ~ .
-    # [ "$IFTEST" = "y" ] && cdebug "此处注释了stow 仅供调试使用 stow -D -t ~ ."
-    cdebug "有bug, 反正不能用-D选项，此处注释了"
+    # [ "$IFTEST" = "y" ] && DEBUG "此处注释了stow 仅供调试使用 stow -D -t ~ ."
+    DEBUG "有bug, 反正不能用-D选项，此处注释了"
     cd $OPWD
-    minfo "......合并生成$(hostname)_uninstall.sh......"
+    MODULE_INFO "......合并生成$(hostname)_uninstall.sh......"
     echo "#/bin/bash" > $CONFIGP/$(hostname)_uninstall.sh
     saveArray recordInstall $CONFIGP/$(hostname)_uninstall.sh "-g"
     saveArray recordConfig $CONFIGP/$(hostname)_uninstall.sh "-g"
-    csuccess "......ALL_DONE......"   
+    SUCCESS "......ALL_DONE......"   
 else
-    cerror "卸载失败 未卸载个数${ifER}"
+    ERROR "卸载失败 未卸载个数${ifER}"
 fi
 # ===============================================
 EOF
@@ -222,9 +222,9 @@ EOF
 }
 
 finalgen_updatesh(){
-    minfo "暂时不能使用finalgen_updatesh"
+    MODULE_INFO "暂时不能使用finalgen_updatesh"
     exit 1
-    minfo "......最终合并生成update.sh......"
+    MODULE_INFO "......最终合并生成update.sh......"
     local fileName=$UPDATE
 
     # 更新recordUpdate
@@ -244,8 +244,8 @@ IFTEST=${IFTEST:-n}
 EOF
 
 cat << 'EOF' >> $fileName
-cwarn "无法自动检测更新状态，请手动检查"
-csuccess "......ALL_DONE......" 
+WARN "无法自动检测更新状态，请手动检查"
+SUCCESS "......ALL_DONE......" 
 # ===============================================
 EOF
 
@@ -258,7 +258,7 @@ EOF
 }
 
 finalgen_readme(){
-    minfo "......最终合并生成README.md......"
+    MODULE_INFO "......最终合并生成README.md......"
 cat << 'EOF' >> $TEMP/README.md
 # DotfilesConfigMaster
 
@@ -332,5 +332,5 @@ cat << 'EOF' >> $TEMP/README.md
 
 
 EOF
-    csuccess "README.md 生成成功"
+    SUCCESS "README.md 生成成功"
 }

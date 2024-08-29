@@ -30,9 +30,9 @@ ysyx_systemc_install(){
 # https://gist.github.com/bagheriali2001/0736fabf7da95fb02bbe6777d53fabf7
 genSignS "ysyx_systemc" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装ysyx_systemc......"
+MODULE_INFO "......正在安装ysyx_systemc......"
 if ysyx_systemc_check; then
-    cwarn "ysyx_systemc已经安装，不再执行安装操作"
+    WARN "ysyx_systemc已经安装，不再执行安装操作"
 else
 _cPWD=$(pwd)
 sudo apt-get install automake -y

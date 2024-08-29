@@ -20,9 +20,9 @@ return 1
 ysyx_gtkwave_install(){
 genSignS "ysyx_gtkwave" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装ysyx_gtkwave......"
+MODULE_INFO "......正在安装ysyx_gtkwave......"
 if ysyx_gtkwave_check; then
-    cwarn "ysyx_gtkwave已经安装，不再执行安装操作"
+    WARN "ysyx_gtkwave已经安装，不再执行安装操作"
 else
 sudo apt install meson gperf flex desktop-file-utils libgtk-3-dev  libgtk-4-dev \
             libbz2-dev libjudy-dev libgirepository1.0-dev -y

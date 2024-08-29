@@ -23,9 +23,9 @@ zshplugins_check(){
 zshplugins_install(){
 genSignS "zshplugins" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装zshplugins......"
+MODULE_INFO "......正在安装zshplugins......"
 if zshplugins_check; then
-    cwarn "zshplugins已经安装，不再执行安装操作"
+    WARN "zshplugins已经安装，不再执行安装操作"
 else
 # 安装oh my zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"

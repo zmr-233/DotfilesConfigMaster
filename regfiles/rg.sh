@@ -18,9 +18,9 @@ rg_check(){
 rg_install(){
 genSignS "rg" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装rg......"
+MODULE_INFO "......正在安装rg......"
 if rg_check; then
-    cwarn "rg已经安装，不再执行安装操作"
+    WARN "rg已经安装，不再执行安装操作"
 else
 sudo apt-get install ripgrep -y
 

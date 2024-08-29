@@ -29,16 +29,16 @@ cat << 'EOF' >> $INSTALL
 if [ -f "$HOME/.ysyxrc" ];then 
     source $HOME/.ysyxrc
 else
-    cwarn "目前没有很好的办法处理非连续安装的环境变量问题"
+    WARN "目前没有很好的办法处理非连续安装的环境变量问题"
 # =====用于处理紧接着安装verilator但是环境变量还没设置的问题=====
 export SYSTEMC_INCLUDE=$HOME/bin/systemc-2.3.4/include
 export SYSTEMC_LIBDIR=$HOME/bin/systemc-2.3.4/lib-linux64
 # =====用于处理紧接着安装verilator但是环境变量还没设置的问题=====
 export VERILATOR_SOLVER=z3
 fi
-minfo "......正在安装ysyx_verilator......"
+MODULE_INFO "......正在安装ysyx_verilator......"
 if ysyx_verilator_check; then
-    cwarn "ysyx_verilator已经安装，不再执行安装操作"
+    WARN "ysyx_verilator已经安装，不再执行安装操作"
 else
 # 运行Verilator
 sudo apt-get install git help2man perl make -y # python3
@@ -66,12 +66,12 @@ autoconf        # Create ./configure script
 # unset VERILATOR_ROOT # 全局安装 PATH下
 export VERILATOR_ROOT=`pwd` # 局部安装，然后执行$VERILATOR_ROOT/bin/verilator
 if [[ -n $VERILATOR_SOLVER && -n $SYSTEMC_INCLUDE && -n $SYSTEMC_LIBDIR ]]; then
-    cinfo "VERILATOR_ROOT: $VERILATOR_ROOT"
-    cinfo "VERILATOR_SOLVER: $VERILATOR_SOLVER"
-    cinfo "SYSTEMC_INCLUDE: $SYSTEMC_INCLUDE"
-    cinfo "SYSTEMC_LIBDIR: $SYSTEMC_LIBDIR"
+    INFO "VERILATOR_ROOT: $VERILATOR_ROOT"
+    INFO "VERILATOR_SOLVER: $VERILATOR_SOLVER"
+    INFO "SYSTEMC_INCLUDE: $SYSTEMC_INCLUDE"
+    INFO "SYSTEMC_LIBDIR: $SYSTEMC_LIBDIR"
 else
-    cerror "必须在配置gtkwave/systemc/z3后再运行varilator的安装：不然会出问题"
+    ERROR "必须在配置gtkwave/systemc/z3后再运行varilator的安装：不然会出问题"
     return 1
     exit 1
 fi

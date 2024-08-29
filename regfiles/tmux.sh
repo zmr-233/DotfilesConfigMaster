@@ -18,9 +18,9 @@ return $?
 tmux_install(){
 genSignS "tmux" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装tmux......"
+MODULE_INFO "......正在安装tmux......"
 if tmux_check; then
-    cwarn "tmux已经安装，不再执行安装操作"
+    WARN "tmux已经安装，不再执行安装操作"
 else
 sudo apt install tmux -y
 
@@ -67,8 +67,8 @@ bind l select-pane -R
 # set -as terminal-features ",xterm*:RGB"
 EOF
     if [[ "$TERM" == *tmux* ]]; then
-        cerror "请在tmux外部运行 echo \$TERM 来查看你的终端类型"
-        cerror "再手动修改~/.tmux.conf，否则不会显示24-bits真色彩"
+        ERROR "请在tmux外部运行 echo \$TERM 来查看你的终端类型"
+        ERROR "再手动修改~/.tmux.conf，否则不会显示24-bits真色彩"
     else
         {
             echo 'set -as terminal-overrides ",'"$(echo ${TERM%%-*})"'*:Tc"'

@@ -23,9 +23,9 @@ return 1
 rust_install(){
 genSignS "rust" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装rust......"
+MODULE_INFO "......正在安装rust......"
 if rust_check; then
-    cwarn "rust已经安装，不再执行安装操作"
+    WARN "rust已经安装，不再执行安装操作"
 else
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
@@ -56,7 +56,7 @@ rust_update(){
 genSignS "rust" $UPDATE
 cat << 'EOF' >> $UPDATE
 
-minfo "......正在升级rust......"
+MODULE_INFO "......正在升级rust......"
 rustup update
 
 EOF

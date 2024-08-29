@@ -85,51 +85,51 @@ final_execute(){
         return
     fi
     if [ -n $CHFLAG ] && [ "$CHFLAG" = "DO_NOT_CHECK" ];then
-        minfo $'\n\n\n\n\n'"=================================执行$FINAL_EXECUTE.sh================================="
-        $OPWD/$FINAL_EXECUTE.sh && csuccess "$FINAL_EXECUTE.sh执行完成" || cerror "$FINAL_EXECUTE.sh执行失败"
+        MODULE_INFO $'\n\n\n\n\n'"=================================执行$FINAL_EXECUTE.sh================================="
+        $OPWD/$FINAL_EXECUTE.sh && SUCCESS "$FINAL_EXECUTE.sh执行完成" || ERROR "$FINAL_EXECUTE.sh执行失败"
     else
-        cwarn "强烈建议自行检查$FINAL_EXECUTE.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
+        WARN "强烈建议自行检查$FINAL_EXECUTE.sh执行,否则一切后果自负! 没准你写了sudo rm -rf /*(笑) "
         if readReturn "是否不检查直接执行$FINAL_EXECUTE.sh?"; then
-            cline "YELLOW" "倒计时后执行: " && countdown 2
-            minfo $'\n\n\n\n\n'"=================================执行$FINAL_EXECUTE.sh================================="
-            $OPWD/$FINAL_EXECUTE.sh && csuccess "$FINAL_EXECUTE.sh执行完成" || cerror "$FINAL_EXECUTE.sh执行失败"
+            nECHO "YELLOW" "倒计时后执行: " && countdown 2
+            MODULE_INFO $'\n\n\n\n\n'"=================================执行$FINAL_EXECUTE.sh================================="
+            $OPWD/$FINAL_EXECUTE.sh && SUCCESS "$FINAL_EXECUTE.sh执行完成" || ERROR "$FINAL_EXECUTE.sh执行失败"
         else
-            cinfo "请手动执行 $OPWD/$FINAL_EXECUTE.sh"
+            INFO "请手动执行 $OPWD/$FINAL_EXECUTE.sh"
         fi
     fi
     FINAL_EXECUTE=""
 }
 
 zmr233tools(){
-    cecho DIM "============================================================"
+    ECHO DIM "============================================================"
     echo -e "${CYAN_BOLD} _______  __ ____  ____  __________  ${YELLOW_BOLD} _____           _      ${RESET}"
     echo -e "${CYAN_BOLD}|__  /  \/  |  _ \|___ \|___ /___ /  ${YELLOW_BOLD}|_   _|__   ___ | |___  ${RESET}"
     echo -e "${CYAN_BOLD}  / /| |\/| | |_) | __) | |_ \ |_ \  ${YELLOW_BOLD}  | |/ _ \ / _ \| / __| ${RESET}"
     echo -e "${CYAN_BOLD} / /_| |  | |  _ < / __/ ___) |__) | ${YELLOW_BOLD}  | | (_) | (_) | \__ \ ${RESET}"
     echo -e "${CYAN_BOLD}/____|_|  |_|_| \_\_____|____/____/  ${YELLOW_BOLD}  |_|\___/ \___/|_|___/ ${RESET}"
-    cecho DIM "============================================================"
+    ECHO DIM "============================================================"
 }
 
 welcome(){
     echo ""
-    cecho CYAN_BOLD ">>>>>> 欢迎使用 DotfilesConfigMaster <<<<<<<"
-    cecho CYAN_BOLD "————————————模块化管理dotfiles工具———————————"
+    ECHO CYAN_BOLD ">>>>>> 欢迎使用 DotfilesConfigMaster <<<<<<<"
+    ECHO CYAN_BOLD "————————————模块化管理dotfiles工具———————————"
     echo ""
 }
 
 info_help() {
-  cnote "Usage: script.sh [OPTIONS]"
-  cinput "Options:"
-  cinfo "  -n, --no, --simulate        Set IFTEST=y"
-  cinfo "  -s, --silent                Set SILENT_INSTALL=y"
-  cinfo "  -S, --silent-hostname       Do silently execute hostname.sh"
-  cinfo "  --install=a,b,c,d           Add a, b, c, d to INSTALL_LIST array"
-  cinfo "  --config=a,b,c,d            Add a, b, c, d to CONFIG_LIST array"
-  cinfo "  --istcfg=a,b,c,d            Add a, b, c, d to both INSTALL_LIST and CONFIG_LIST arrays"
-  cinfo "  --install--config=a,b,c,d   Add a, b, c, d to both INSTALL_LIST and CONFIG_LIST arrays"
-  cinfo "  --debug                     Set DEB=y"
-  cinfo "  --all=xxx                   Set SILENT_ALL=xxx"
-  cinfo "  -h, --help                  Display this help message"
+  NOTE "Usage: script.sh [OPTIONS]"
+  INPUT "Options:"
+  INFO "  -n, --no, --simulate        Set IFTEST=y"
+  INFO "  -s, --silent                Set SILENT_INSTALL=y"
+  INFO "  -S, --silent-hostname       Do silently execute hostname.sh"
+  INFO "  --install=a,b,c,d           Add a, b, c, d to INSTALL_LIST array"
+  INFO "  --config=a,b,c,d            Add a, b, c, d to CONFIG_LIST array"
+  INFO "  --istcfg=a,b,c,d            Add a, b, c, d to both INSTALL_LIST and CONFIG_LIST arrays"
+  INFO "  --install--config=a,b,c,d   Add a, b, c, d to both INSTALL_LIST and CONFIG_LIST arrays"
+  INFO "  --debug                     Set DEB=y"
+  INFO "  --all=xxx                   Set SILENT_ALL=xxx"
+  INFO "  -h, --help                  Display this help message"
 }
 
 parse_args() {
@@ -137,37 +137,37 @@ parse_args() {
         case $1 in
             -n|--no|--simulate)
                 IFTEST=y
-                cinfo "IFTEST set to 'y'"
+                INFO "IFTEST set to 'y'"
                 ;;
             -s|--silent)
                 SILENT_INSTALL=y
-                cinfo "SILENT_INSTALL set to 'y'"
+                INFO "SILENT_INSTALL set to 'y'"
                 ;;
             -S|--silent-hostname)
                 SILENT_HOSTNAME=y
-                cinfo "SILENT_HOSTNAME set to 'y'"
+                INFO "SILENT_HOSTNAME set to 'y'"
                 ;;
             --install=*)
                 IFS=',' read -r -a INSTALL_LIST <<< "${1#*=}"
-                cinfo "INSTALL_LIST set to '${INSTALL_LIST[*]}'"
+                INFO "INSTALL_LIST set to '${INSTALL_LIST[*]}'"
                 ;;
             --config=*)
                 IFS=',' read -r -a CONFIG_LIST <<< "${1#*=}"
-                cinfo "CONFIG_LIST set to '${CONFIG_LIST[*]}'"
+                INFO "CONFIG_LIST set to '${CONFIG_LIST[*]}'"
                 ;;
             --istcfg=*|--install--config=*)
                 IFS=',' read -r -a BOTH_LIST <<< "${1#*=}"
                 INSTALL_LIST=("${BOTH_LIST[@]}")
                 CONFIG_LIST=("${BOTH_LIST[@]}")
-                cinfo "INSTALL_LIST and CONFIG_LIST set to '${BOTH_LIST[*]}'"
+                INFO "INSTALL_LIST and CONFIG_LIST set to '${BOTH_LIST[*]}'"
                 ;;
             -d|--debug)
                 DEB=y
-                cinfo "DEB set to 'y'"
+                INFO "DEB set to 'y'"
                 ;;
             --all=*)
                 SILENT_ALL="${1#*=}"
-                cinfo "SILENT_ALL set to '${SILENT_ALL}'"
+                INFO "SILENT_ALL set to '${SILENT_ALL}'"
                 ;;
             -h|--help)
                 info_help
@@ -175,11 +175,11 @@ parse_args() {
                 ;;
             --zmr233)
                 ZMR_TEST=y;DEB=y
-                cwarn "zmr233测试安装模式--警告：是用来测试虚拟机的"
+                WARN "zmr233测试安装模式--警告：是用来测试虚拟机的"
                 exit 0
                 ;;
             *)
-                cerror "Unknown option: $1"
+                ERROR "Unknown option: $1"
                 return 1
                 ;;
         esac
@@ -189,13 +189,13 @@ parse_args() {
 
 other_methods(){
     while true; do
-        minfo "......其他特殊操作......"
-        cnote "这些特殊函数基本上不具有可移植性，纯粹是为了zmr233方便装机而服务的"
-        cecho YELLOW_BOLD "A/1-更换清华源"
-        cecho YELLOW_BOLD "B/2-为github生成ssh密钥对"
-        cecho YELLOW_BOLD "C/3-无条件安装+配置整个regFiles"
-        cecho YELLOW_BOLD "D/4-无条件仅配置\$hostname.sh"
-        cecho YELLOW_BOLD "Q/0-退出"
+        MODULE_INFO "......其他特殊操作......"
+        NOTE "这些特殊函数基本上不具有可移植性，纯粹是为了zmr233方便装机而服务的"
+        ECHO YELLOW_BOLD "A/1-更换清华源"
+        ECHO YELLOW_BOLD "B/2-为github生成ssh密钥对"
+        ECHO YELLOW_BOLD "C/3-无条件安装+配置整个regFiles"
+        ECHO YELLOW_BOLD "D/4-无条件仅配置\$hostname.sh"
+        ECHO YELLOW_BOLD "Q/0-退出"
         readNoSpace selecT "输入数字/大小写字符进行选择"
         
         case $selecT in
@@ -216,11 +216,11 @@ other_methods(){
                 FINAL_EXECUTE="install"
                 ;;
             Q|q|0)
-                minfo "退出"
+                MODULE_INFO "退出"
                 break
                 ;;
             *)
-                cerror "输入错误，请重新输入"
+                ERROR "输入错误，请重新输入"
                 ;;
         esac
         final_execute
@@ -242,7 +242,7 @@ main() {
 
     # --zmr233模式--用来测试安装虚拟机的
     if [[ -n $ZMR_TEST ]]; then
-        minfo "zmr233测试安装模式"
+        MODULE_INFO "zmr233测试安装模式"
         __test__do_not_run_in_your_pc
         exit 1
     fi
@@ -250,16 +250,16 @@ main() {
     # --istcfg=a,b,c,d --config=a,b,c,d 选项 => 指定快速安装
     # 简单粗暴，不检查依赖关系
     if [[ ${#INSTALL_LIST[@]} -gt 0 || ${#CONFIG_LIST[@]} -gt 0 ]]; then
-        minfo "指定快速安装模式: 仅用于生成install.sh，不检查任何依赖关系"
+        MODULE_INFO "指定快速安装模式: 仅用于生成install.sh，不检查任何依赖关系"
 
-        cinfo "......自动生成安装指令ing......"
+        INFO "......自动生成安装指令ing......"
         for reg in "${INSTALL_LIST[@]}"; do
-            ${reg}_install && csuccess "==> $reg : [y]" || cerror "==> $reg : [ERROR]"
+            ${reg}_install && SUCCESS "==> $reg : [y]" || ERROR "==> $reg : [ERROR]"
         done
 
-        cinfo "......自动生成配置文件ing......"
+        INFO "......自动生成配置文件ing......"
         for reg in "${CONFIG_LIST[@]}"; do
-            ${reg}_config && csuccess "==> $reg : [y]" || cerror "==> $reg : [ERROR]"
+            ${reg}_config && SUCCESS "==> $reg : [y]" || ERROR "==> $reg : [ERROR]"
         done
 
         finalgen_installsh
@@ -268,15 +268,15 @@ main() {
 
     # --all=xxx 选项 => 静默快速安装
     if [[ -n $SILENT_ALL && -f $CONFIGP/$SILENT_ALL.sh ]]; then
-        minfo "--all=xxx模式: 快速静默安装+配置指定hostname.sh所有内容"
+        MODULE_INFO "--all=xxx模式: 快速静默安装+配置指定hostname.sh所有内容"
         source $CONFIGP/$SILENT_ALL.sh
         __info__install
         __info__config
         finalgen_installsh
-        $OPWD/install.sh && csuccess "install.sh安装成功" || cerror "install.sh安装失败"
+        $OPWD/install.sh && SUCCESS "install.sh安装成功" || ERROR "install.sh安装失败"
         exit 1
     elif [[ -n $SILENT_ALL ]];then
-        cerror "没有找到此hostname文件: $SILENT_ALL.sh"
+        ERROR "没有找到此hostname文件: $SILENT_ALL.sh"
         exit 1
     fi
 
@@ -285,7 +285,7 @@ main() {
 
     
     if [ "$SILENT_HOSTNAME" = "y" ];then
-        minfo "执行完全静默安装hostname.sh"
+        MODULE_INFO "执行完全静默安装hostname.sh"
         __silent__config_hostname_all
         finalgen_installsh
         FINAL_EXECUTE="install"
@@ -297,14 +297,14 @@ main() {
     # .............................................................
     while true; do # 一次循环后默认就退出了
         info_install_list # 打印安装信息
-        minfo "......交互式配置......"
-        cecho YELLOW_BOLD "A/1-创建注册文件"
-        cecho YELLOW_BOLD "B/2-交互式配置/安装"
-        cecho YELLOW_BOLD "C/3-交互式卸载"
-        cecho YELLOW_BOLD "D/4-交互式升级"
-        cecho YELLOW_BOLD "E/5-生成README.md"
-        cecho YELLOW_BOLD "Z-其他特殊操作"
-        cecho YELLOW_BOLD "Q/0-退出"
+        MODULE_INFO "......交互式配置......"
+        ECHO YELLOW_BOLD "A/1-创建注册文件"
+        ECHO YELLOW_BOLD "B/2-交互式配置/安装"
+        ECHO YELLOW_BOLD "C/3-交互式卸载"
+        ECHO YELLOW_BOLD "D/4-交互式升级"
+        ECHO YELLOW_BOLD "E/5-生成README.md"
+        ECHO YELLOW_BOLD "Z-其他特殊操作"
+        ECHO YELLOW_BOLD "Q/0-退出"
         readNoSpace selecT "输入数字/大小写字符进行选择"
         case $selecT in
             A|a|1)
@@ -336,16 +336,16 @@ main() {
                 other_methods        
                 ;;
             Q|q|0)
-                minfo "退出"
+                MODULE_INFO "退出"
                 break
                 ;;
             *)
-                cerror "输入错误"
+                ERROR "输入错误"
                 ;;
         esac
         final_execute
     done
-    csuccess "==========config.sh========= END..."
+    SUCCESS "==========config.sh========= END..."
 }
 
 main "$@"

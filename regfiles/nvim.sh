@@ -18,9 +18,9 @@ return $?
 nvim_install(){
 genSignS "nvim" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装nvim......"
+MODULE_INFO "......正在安装nvim......"
 if nvim_check; then
-    cwarn "nvim已经安装，不再执行安装操作"
+    WARN "nvim已经安装，不再执行安装操作"
 else
 # 直接使用小彭老师自用 NeoVim 整合包
 # https://github.com/archibate/vimrc

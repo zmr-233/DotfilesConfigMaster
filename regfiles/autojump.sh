@@ -18,9 +18,9 @@ return $?
 autojump_install(){
 genSignS "autojump" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装autojump......"
+MODULE_INFO "......正在安装autojump......"
 if autojump_check; then
-    cwarn "autojump已经安装，不再执行安装操作"
+    WARN "autojump已经安装，不再执行安装操作"
 else
 git clone https://github.com/wting/autojump.git ~/bin/autojump
 ~/bin/autojump/install.py #or ~/bin/autojump//uninstall.py

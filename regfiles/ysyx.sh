@@ -23,9 +23,9 @@ return 1
 ysyx_install(){
 genSignS "ysyx" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装ysyx......"
+MODULE_INFO "......正在安装ysyx......"
 if ysyx_check; then
-    cwarn "ysyx已经安装，不再执行安装操作"
+    WARN "ysyx已经安装，不再执行安装操作"
 else
 git clone -b master git@github.com:OSCPU/ysyx-workbench.git ./ysyx
 

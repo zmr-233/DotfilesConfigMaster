@@ -18,9 +18,9 @@ zsh_check(){
 zsh_install(){
 genSignS "zsh" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装zsh......"
+MODULE_INFO "......正在安装zsh......"
 if zsh_check; then
-    cwarn "zsh已经安装，不再执行安装操作"
+    WARN "zsh已经安装，不再执行安装操作"
 else
 sudo apt install zsh -y
 chsh -s $(which zsh) # 设置默认终端
@@ -117,7 +117,7 @@ cat << 'EOF' >> $TEMP/./.zshrc
 
 EOF
 else
-    cwarn "没有找到jyy os的AbstractMachine配置, 跳过..."
+    WARN "没有找到jyy os的AbstractMachine配置, 跳过..."
 fi
 
 # DotfilesConfigMaster的目录所在

@@ -20,9 +20,9 @@ return 1
 ysyx_z3_install(){
 genSignS "ysyx_z3" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装ysyx_z3......"
+MODULE_INFO "......正在安装ysyx_z3......"
 if ysyx_z3_check; then
-    cwarn "ysyx_z3已经安装，不再执行安装操作"
+    WARN "ysyx_z3已经安装，不再执行安装操作"
 else
 # 项目地址：https://github.com/z3prover/z3#readme
 git clone https://github.com/z3prover/z3 ~/bin/z3
@@ -64,7 +64,7 @@ ysyx_z3_uninstall(){
 genSignS "ysyx_z3" $UNINSTALL
 cat << 'EOF' >> $UNINSTALL
 
-minfo "......正在卸载ysyx_z3......"
+MODULE_INFO "......正在卸载ysyx_z3......"
 if ysyx_z3_check; then
 _cPWD=$(pwd)
 cd $HOME/bin/z3
@@ -72,7 +72,7 @@ sudo make uninstall # 卸载命令
 cd $_cPWD
 
 else
-    cwarn "ysyx_z3已经卸载，不再执行卸载操作"
+    WARN "ysyx_z3已经卸载，不再执行卸载操作"
 fi
 EOF
 genSignE "ysyx_z3" $UNINSTALL

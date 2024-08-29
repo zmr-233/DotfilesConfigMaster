@@ -18,9 +18,9 @@ return $?
 strace_install(){
 genSignS "strace" $INSTALL
 cat << 'EOF' >> $INSTALL
-minfo "......正在安装strace......"
+MODULE_INFO "......正在安装strace......"
 if strace_check; then
-    cwarn "strace已经安装，不再执行安装操作"
+    WARN "strace已经安装，不再执行安装操作"
 else
 sudo apt install strace -y
 
