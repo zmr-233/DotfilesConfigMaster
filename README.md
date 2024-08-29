@@ -36,9 +36,11 @@
 | tmux | 终端多路复用 |
 | zsh | 功能强大的命令行Shell |
 | zstree | 是zmr233写的类似于pstree用于显示进程树的工具 |
+| libbash | 是zmr封装了大量实用bash函数的脚本库 |
 | proxy | 保留代理的sudop |
 | ssh | Secure Shell这里加载私钥的配置 |
 | zshplugins | oh-my-zsh管plugins=(插件 |
+| changeflow | 轻松切换和管理工作流的工具 |
 | autojump | 智能目录跳转工具 |
 | bat | 颜色高亮和分页显示的cat命令增强版 |
 | fd | 更好的find |

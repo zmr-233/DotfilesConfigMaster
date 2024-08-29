@@ -19,6 +19,7 @@ declare -g -a recordInstall=(
 "rg" 
 "rust" 
 "ysyx" 
+"changeflow" 
 "valgrind" 
 "fzf" 
 "ysyx_systemc" 
@@ -49,5 +50,6 @@ declare -g -a recordConfig=(
 "ysyx_z3" 
 "ysyx_verilator" 
 "libbash" 
+"changeflow" 
 )
 
