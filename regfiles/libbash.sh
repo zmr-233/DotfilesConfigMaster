@@ -291,6 +291,7 @@ fi
 
 
 
+
 PPAP
 
 # 配置文件 libbash/array_utils.sh
@@ -419,6 +420,7 @@ delFromArr() {
 
 
 
+
 RTYU
 
 # 配置文件 libbash/color_utils.sh
@@ -491,6 +493,7 @@ ABORT(){ echo -e "${RED_BOLD}[ABORT] ${1}${RESET}"; }
 # @param string $1 要输出的调试信息文本
 # 输出调试信息
 DEBUG(){ echo -e "${YELLOW}[DEBUG] ${1}${RESET}"; }
+
 
 
 
@@ -577,6 +580,7 @@ diffFile() {
     return 1
   fi
 }
+
 
 
 
@@ -745,6 +749,7 @@ readMultiLine() {
 
 
 
+
 RTYU
 
 # 配置文件 libbash/others_utils.sh
@@ -823,6 +828,7 @@ countDown() {
 # ========================================
 
 # 请根据如上要求，用中文为如下的函数生成函数描述：
+
 
 
 
@@ -1038,6 +1044,7 @@ regfileTemplate(){
 }
 
 
+
 RTYU
 
 # 配置文件 libbash/safe_utils.sh
@@ -1127,6 +1134,7 @@ _checkTargetDirExists() {
 # @param string $targetDir 目标目录路径
 # @param string $backupSubdir 备份子目录路径（可选，默认为目标目录下的backup目录）
 # @return void
+# v1.1新增内容: 检查目标文件是否存在并与源文件内容不同，如果完全相同就不复制了
 # 安全复制文件
 copySafe() {
     local sourceFile=$1
@@ -1138,8 +1146,15 @@ copySafe() {
 
     local targetFile="$targetDir/$(basename "$sourceFile")"
 
+    # 检查目标文件是否存在并与源文件内容不同
     if [ -f "$targetFile" ]; then
-        _createBackup "$targetFile" "$backupSubdir" || return 1
+        diffFile "$sourceFile" "$targetFile"
+        local filesAreDifferent=$?
+
+        # 如果文件存在且内容不同，则创建备份
+        if [ $filesAreDifferent -ne 0 ]; then
+            _createBackup "$targetFile" "$backupSubdir" || return 1
+        fi
     fi
 
     cp -r "$sourceFile" "$targetFile" && INFO "File $sourceFile has been copied to $targetFile"
@@ -1264,6 +1279,7 @@ operateMapFiles() {
         fi
     done
 }
+
 
 
 
