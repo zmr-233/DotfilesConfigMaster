@@ -11,6 +11,10 @@ declare -g -a recordInstall=(
 "ssh" 
 "zshplugins" 
 "libbash" 
+"moonbit" 
+"Emscripten" 
+"sdkman" 
+"sml" 
 "autojump" 
 "bat" 
 "fd" 
@@ -51,5 +55,9 @@ declare -g -a recordConfig=(
 "ysyx_verilator" 
 "libbash" 
 "changeflow" 
+"moonbit" 
+"Emscripten" 
+"sdkman" 
+"sml" 
 )
 

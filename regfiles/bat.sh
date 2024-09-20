@@ -50,7 +50,8 @@ export MANROFFOPT='-c' # 不设置会导致乱码
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # 彩色-h --help --zsh独有
-alias -g -- -h='-h 2>&1 | bat --language=help --style=plain'
+# alias -g -- -h='-h 2>&1 | bat --language=help --style=plain'
+# 会导致 [[ -h "$1" ]] 冲突 不要使用
 alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
 
 # 使用help cp实现的代码高亮
