@@ -15,6 +15,9 @@ declare -g -a recordInstall=(
 "Emscripten" 
 "sdkman" 
 "sml" 
+"GLEW" 
+"GLFW" 
+"vcpkg" 
 "autojump" 
 "bat" 
 "fd" 
@@ -59,5 +62,8 @@ declare -g -a recordConfig=(
 "Emscripten" 
 "sdkman" 
 "sml" 
+"GLEW" 
+"GLFW" 
+"vcpkg" 
 )
 

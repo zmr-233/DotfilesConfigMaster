@@ -37,12 +37,15 @@
 | zsh | 功能强大的命令行Shell |
 | zstree | 是zmr233写的类似于pstree用于显示进程树的工具 |
 | Emscripten | 编译 C/C++ 为 WebAssembly |
+| GLEW | The OpenGL Extension Wrangler Library |
+| GLFW | Open Source, multi-platform library for OpenGL |
 | libbash | 是zmr封装了大量实用bash函数的脚本库 |
 | moonbit | MoonBit  Cloud and Edge using WASM. |
 | proxy | 保留代理的sudop |
 | sdkman | Switch different Java-SDK |
 | sml | SML/NJ complier fot Standard ML |
 | ssh | Secure Shell这里加载私钥的配置 |
+| vcpkg | C/C++ dependency manager from Microsoft |
 | zshplugins | oh-my-zsh管plugins=(插件 |
 | changeflow | 轻松切换和管理工作流的工具 |
 | autojump | 智能目录跳转工具 |
