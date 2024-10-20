@@ -23,6 +23,11 @@ MODULE_INFO "......正在安装GLFW......"
 if GLFW_check; then
     WARN "GLFW已经安装，不再执行安装操作"
 else
+
+sudo add-apt-repository ppa:oibaf/graphics-drivers
+sudo apt update
+sudo apt upgrade -y
+
 sudo apt install libwayland-dev libxkbcommon-dev xorg-dev # Wayland & X11依赖项
 mkdir -p ~/2_Repository/ && mkdir -p ~/bin/GLFW/3.4/
 git clone https://github.com/glfw/glfw ~/2_Repository/glfw

@@ -27,7 +27,7 @@ else
 sudo apt update && sudo apt upgrade -y
 sudo apt install build-essential gdb -y
 sudo apt-get install stow -y
-sudo apt install zip -y
+sudo apt install zip unzip -y
 
 fi
 EOF
