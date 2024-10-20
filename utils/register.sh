@@ -106,9 +106,9 @@ register_hostname(){
                 if [[ -f $CONFIGP/$configName.sh ]]; then
                     source $CONFIGP/$configName.sh
                     SUCCESS "成功加载$configName.sh"
+                    break   
                 else
                     ERROR "未找到$configName.sh"
-                    exit 1
                 fi
             done
         fi
