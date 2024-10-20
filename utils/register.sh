@@ -16,6 +16,8 @@ check_preCmd(){
     fi
 }
 
+
+
 # 1.注册模块
 register_regFiles(){
     MODULE_INFO "......加载注册文件模块......."
@@ -100,14 +102,15 @@ register_hostname(){
             return 0
         else
             NOTE "当前所有配置 ${configFiles[@]}"
-            readNoSpace configName "请输入选择的配置名称"
-            if [[ -f $CONFIGP/$configName.sh ]]; then
-                source $CONFIGP/$configName.sh
-                SUCCESS "成功加载$configName.sh"
-            else
-                ERROR "未找到$configName.sh"
-                exit 1
-            fi
+            select configName in "${configFiles[@]}"; do
+                if [[ -f $CONFIGP/$configName.sh ]]; then
+                    source $CONFIGP/$configName.sh
+                    SUCCESS "成功加载$configName.sh"
+                else
+                    ERROR "未找到$configName.sh"
+                    exit 1
+                fi
+            done
         fi
     fi
 

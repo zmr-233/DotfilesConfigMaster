@@ -27,8 +27,10 @@ INSTALL=$TEMP/install.sh
 AFTERINSTALL=$TEMP/installafter.sh
 UPDATE=$TEMP/update.sh
 UNINSTALL=$TEMP/uninstall.sh
+
 cat << EOF | tee $INSTALL $UPDATE $UNINSTALL >/dev/null
 #!/bin/bash
+
 
 # 加载实用函数
 for script in $UTILSP/*.sh; do
@@ -39,6 +41,22 @@ done
 for script in $REGP/*.sh; do
     source "\$script"
 done
+
+# 设置代理
+if ! checkCmd "proxy";then
+    MODULE_INFO "......加载系统代理......."  
+    if readReturn "未检测到WSL2用于从宿主代理中获得代理的proxy()函数，请确认是否设置代理";then
+        readNoSpace port_n "请输入宿主代理端口号"
+        export HOST_IP=$(ip route | grep default | awk '{print $3}');
+        export PROXY_PORT=$port_n;
+        export {all_proxy,ALL_PROXY}="socks5://${HOST_IP}:${PROXY_PORT}";
+        export {ftp_proxy,FTP_PROXY}="http://${HOST_IP}:${PROXY_PORT}";
+        export {http_proxy,HTTP_PROXY}="http://${HOST_IP}:${PROXY_PORT}";
+        export {https_proxy,HTTPS_PROXY}="http://${HOST_IP}:${PROXY_PORT}";        
+        alias sudop='sudo --preserve-env=all_proxy,ALL_PROXY,ftp_proxy,FTP_PROXY,http_proxy,HTTP_PROXY,https_proxy,HTTPS_PROXY'
+        alias sudo='sudop'
+    fi
+fi
 
 ISCONFIG=y # Bug:用于checkCfg的判断困难问题
 EOF

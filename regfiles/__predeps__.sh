@@ -24,8 +24,10 @@ MODULE_INFO "......正在安装__predeps__......"
 if __predeps___check; then
     WARN "__predeps__已经安装，不再执行安装操作"
 else
+sudo apt update && sudo apt upgrade -y
 sudo apt install build-essential gdb -y
 sudo apt-get install stow -y
+sudo apt install zip -y
 
 fi
 EOF
