@@ -14,7 +14,6 @@ declare -g -a recordInstall=(
 "moonbit" 
 "Emscripten" 
 "sdkman" 
-"sml" 
 "GLEW" 
 "GLFW" 
 "vcpkg" 
