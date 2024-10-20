@@ -60,7 +60,6 @@ declare -g -a recordConfig=(
 "moonbit" 
 "Emscripten" 
 "sdkman" 
-"sml" 
 "GLEW" 
 "GLFW" 
 "vcpkg" 
