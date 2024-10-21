@@ -80,7 +80,7 @@ if [[ $stillInstall -eq 1 ]]; then
             elif [ "$IFTEST" = "y" ]; then
                 DEBUG "cp $TEMP/$key/$file $CURDOTFILES/$key/$file"
             fi
-            if [ -f "$HOME/$key/$file" ] && [ ! -L "$HOME/$key/$file" ]; then
+            if [ -f "$HOME/$key/$file" ] && [ ! -L "$HOME/$key/$file" ] && [ ! -L "$HOME/$key" ]; then
                 if readReturn "文件$HOME/$key/$file已存在，是否备份后删除？[y/n]"; then
                     safeBackup "$HOME/$key/$file" "$CURDOTFILES" "$key"
                     rm "$HOME/$key/$file"
@@ -96,8 +96,8 @@ if [[ $stillInstall -eq 1 ]]; then
     # 用来强制覆盖现有文件
     # https://www.reddit.com/r/linuxquestions/comments/x5uvc5/stow_only_create_symlinks_to_files_not_directories/
     # 令人困惑的为整个文件夹创建符号链接问题 --no-folding
-    [ "$IFTEST" = "n" ] && stow --adopt --override --no-folding -R -t ~ . && INFO "> stow --adopt --override --no-folding -R -t ~ ."
-    [ "$IFTEST" = "y" ] && DEBUG "此处注释了stow 仅供调试使用 stow --adopt --override --no-folding -R -t ~ ."
+    [ "$IFTEST" = "n" ] && stow --no-folding -R -t ~ . && INFO "> stow --no-folding -R -t ~ ."
+    [ "$IFTEST" = "y" ] && DEBUG "此处注释了stow 仅供调试使用 stow --no-folding -R -t ~ ."
     cd $OPWD
     MODULE_INFO "......合并生成$(hostname).sh......"
     echo "#/bin/bash" > $CONFIGP/$(hostname).sh
