@@ -221,7 +221,7 @@ other_methods(){
                 __predeps___change_repository
                 ;;
             B|b|2)
-                ssh_method_gitssh
+                ssh_githubssh
                 ;;
             C|c|3)
                 __silent__install_config_all

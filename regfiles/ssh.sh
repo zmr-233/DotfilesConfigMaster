@@ -54,13 +54,13 @@ return 0
 
 
 ssh_githubssh(){
-cat << 'EOF' >> $INSTALL
 
 MODULE_INFO "......为github生成ssh密钥对......"
-NOTE "路径/home//.ssh/main_rsa"
+NOTE "~/.ssh/main_rsa"
 ssh-keygen -t rsa #生成密钥对
 ssh-add ~/.ssh/main_rsa # 添加私钥到ssh代理
 NOTE "或者复制到服务器 ssh-copy-id，这里直接打印出公钥"
 cat ~/.ssh/main_rsa.pub # 打印公钥
-EOF
+
+return 0
 }
