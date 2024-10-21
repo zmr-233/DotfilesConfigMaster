@@ -10,7 +10,7 @@ autojump_deps(){
     echo "__predeps__ zsh zshplugins"
 }
 autojump_check(){
-checkCmd "autojump"
+checkCfg "$HOME/.autojump/etc/profile.d/autojump.sh"
 return $?
 }
 
@@ -23,8 +23,9 @@ if autojump_check; then
     WARN "autojump已经安装，不再执行安装操作"
 else
 git clone https://github.com/wting/autojump.git ~/bin/autojump
-~/bin/autojump/install.py #or ~/bin/autojump//uninstall.py
-
+pushd ~/bin/autojump
+./install.py #or ./uninstall.py
+popd
 fi
 EOF
 genSignE "autojump" $INSTALL
@@ -42,7 +43,7 @@ add_configMap config_map
 genSignS autojump $TEMP/./.zshrc
 cat << 'EOF' >> $TEMP/./.zshrc
 # autojump快速目录跳转
-[[ -s /home/zmr466/.autojump/etc/profile.d/autojump.sh ]] && source /home/zmr466/.autojump/etc/profile.d/autojump.sh
+[[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] && source $HOME/.autojump/etc/profile.d/autojump.sh
 autoload -U compinit && compinit -u
 
 # 覆写的fo函数
